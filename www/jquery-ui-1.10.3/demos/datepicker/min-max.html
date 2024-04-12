@@ -1,0 +1,3056 @@
+% ---------------------------------------------------------------------------
+% Author guideline and sample document for EG publication using LaTeX2e input
+% D.Fellner, v1.13, Jul 31, 2008
+
+\documentclass{egpubl}
+\usepackage{wrapfig}
+
+% --- for EuroVis
+%\WsSubmission    % uncomment for submission to EuroVis
+% \WsPaper         % uncomment for final version of EuroVis contribution
+
+\electronicVersion % can be used both for the printed and electronic version
+
+% !! *please* don't change anything above
+% !! unless you REALLY know what you are doing
+% ------------------------------------------------------------------------
+
+% for including postscript figures
+% mind: package option 'draft' will replace PS figure by a filname within a frame
+\ifpdf \usepackage[pdftex]{graphicx} \pdfcompresslevel=9
+\else \usepackage[dvips]{graphicx} \fi
+
+\PrintedOrElectronic
+
+% prepare for electronic version of your document
+\usepackage{t1enc,dfadobe}
+\usepackage{multirow}
+\usepackage{egweblnk}
+\usepackage{cite}
+\usepackage{stfloats}
+\usepackage{lscape}
+\usepackage{marvosym}
+\usepackage{caption}
+\usepackage{amsfonts}
+
+\setcounter{secnumdepth}{3}
+
+% For backwards compatibility to old LaTeX type font selection.
+% Uncomment if your document adheres to LaTeX2e recommendations.
+% \let\rm=\rmfamily    \let\sf=\sffamily    \let\tt=\ttfamily
+% \let\it=\itshape     \let\sl=\slshape     \let\sc=\scshape
+% \let\bf=\bfseries
+   
+% end of prologue
+% ---------------------------------------------------------------------
+% EG author guidelines plus sample file for EG publication using LaTeX2e input
+% D.Fellner, v1.17, Sep 23, 2010
+
+
+\title[The State-of-the-Art of Set Visualization]%
+      {The State-of-the-Art of Set Visualization}
+
+% instead of the author's name (and leave the affiliation blank) !!
+% for anonymous conference submission please enter your SUBMISSION ID
+\author[B. Alsallakh, L. Micallef, et al.]
+       {Bilal Alsallakh$^{1}$,
+        Luana Micallef$^{2,3}$,
+                Wolfgang Aigner$^{1,4}$,   
+                Helwig Hauser$^{5}$,
+                Silvia Miksch$^{1}$, and
+                Peter Rodgers$^{3}$
+%        S. Spencer$^2$\thanks{Chairman Siggraph Publications Board}
+        \\
+% For Computer Graphics Forum: Please use the abbreviation of your first name.
+         $^1$Vienna University of Technology, Austria    
+         \hspace{9mm} $^2$Helsinki Institute for Information Technology HIIT, Aalto University, Finland   \\
+         \hspace{0mm}  $^3$University of Kent, United Kingdom
+         \hspace{9mm}  $^4$St. P\"{o}lten University of Applied Sciences, Austria        \hspace{9mm}   $^5$University of Bergen, Norway
+%        $^2$ Another Department to illustrate the use in papers from authors
+%             with different affiliations
+       }
+
+% ------------------------------------------------------------------------
+
+% if the Editors-in-Chief have given you the data, you may uncomment
+% the following five lines and insert it here
+%
+% \volume{27}   % the volume in which the issue will be published;
+% \issue{1}     % the issue number of the publication
+% \pStartPage{1}      % set starting page
+
+
+%-------------------------------------------------------------------------
+\begin{document}
+
+\teaser{
+  \includegraphics[width=\linewidth]{images/teaser.png}
+  \centering
+   \caption{
+   Different set visualizations: (a) a combined Euler- and node-link diagram  \cite{Simonetto2009Fully} (b) OnSet \cite{Sadana2014onset}, (c) UpSet \cite{lex2014upset}. }
+    % EulerView with a node-link diagram  \cite{Simonetto2009Fully}
+ \label{fig:teaser}
+}
+
+\maketitle
+
+\begin{abstract}
+
+Due to their simple notions, sets can be employed to model a variety of data analysis problems as the analysis of set relations.
+% can be led by defining multiple sets over a collection of elements and analyzing the relations between these sets.
+However, visualizing sets is a non-trivial problem due to the large number of possible relations between them.
+% Several visualization techniques have been developed to analyze different kinds of set relations.
+We provide a systematic overview of state-of-the-art techniques for visualizing different kinds of set relations.
+We classify these techniques into 7 main categories according to the visual representations they use and the tasks they support.
+We compare the categories to provide guidance for choosing an appropriate technique for a given problem.
+% Additionally, we point to real-world applications of visualizing set-typed data.
+Finally, we identify challenges in this area that need further research and propose possible directions to address these challenges.
+Further resources about set visualization are available at \URL{http://www.setviz.net}.
+
+\begin{classification} % according to http://www.acm.org/class/1998/
+\CCScat{Information Interfaces and Presentation}{H.5.2}{User Interfaces}{Graphical user interfaces}
+\CCScat{Theory of Computation}{F.4.1}{Mathematical Logic}{Set theory}
+
+\end{classification}
+
+\end{abstract}
+
+% Comparative Analysis of Multidimensional, Quantitative Data (Lex et al. InfoVis 2010)
+% semantic sub-strates \cite{shneiderman2006network}
+
+
+%-------------------------------------------------------------------------
+\section{Introduction}
+
+A common step in data analysis is to group data items into sets based on specific properties.
+For instance, Fig.~\ref{fig:teaser}a shows how members of a social network are grouped according to their interests.
+Fig.~\ref{fig:teaser}b shows how chemicals (dots) are contained in different subjects.
+% Fig.~\ref{fig:teaser}a shows an example of how amino acids are grouped according to their known features.
+Several relations between sets are possible, such as: containment, exclusion, and intersection.
+Analyzing these relations is key to gain information about the behavior of the entities they represent.
+Such information might involve which set combinations are common (Fig.~\ref{fig:teaser}c), and whether certain data features are responsible for this.
+% , such as finding strongly related groups (Fig.~\ref{fig:teaser}c).
+% These groups are compared and their relationships are analysed to gain information (e.g. ), to discover new trends (e.g. fertility rate of different countries based on their life expectancy, Fig.~1b) and to reason about the strength of relationships between the groups (e.g. the number of IMDb movies produced in a group of countries)
+% Many concepts in mathematics are defined in terms of sets and relations between them.
+%The simple notion of sets as collections of objects, makes them widely applicable to represent
+As illustrated in Sect.~\ref{sec:where_do_sets_come_from}, a variety of real-world concepts can be modelled using sets, including: club memberships, product features, and employee skill sets.
+Example questions about such data are: whether certain clubs are exclusive to each other, whether a certain product feature is always in combination with another one, and whether specific skill combinations are highly paid.
+% In addition, several algorithms represent their output as sets such as search, matching, and clustering algorithms.
+% Moreover,
+% Moreover, search interfaces
+
+% Analyzing set relations for a given family of sets is vital for reasoning about and understanding the problem they represent. % and draw conclusions or take decisions
+
+% A variety of
+
+Information visualization (InfoVis) offers many opportunities for analyzing sets and their relations.
+A key challenge in visualizing sets is the potentially large number of possible relations between them (Sect.~\ref{sec:combinatorics}). %, as it grows exponentially with the number of sets.
+% This imposes a severe limit on common representations based on Venn and Euler diagrams. %, as they are not always drawable with certain properties.
+Besides Venn and Euler diagrams, several InfoVis techniques were proposed to visualize sets using various representations.
+These techniques vary in their scalability limits and in the set-related tasks they support.
+
+%, with varying scalability limits and support of different set-related tasks.
+% Although set visualization has been traditionally studied in the diagrams and reasoning communities,
+% Venn and Euler diagrams have been extensively studied in the diagrams and reasoning communities.
+% have been traditionally studied in the diagrams and reasoning communities,
+% On the other,
+% These techniques vary in the set-related tasks they support, and in the number of sets and elements they can handle.
+% These techniques go beyond Venn and Euler diagrams and employ a variety of visual metaphors to support different tasks related to sets.
+
+In this report\footnote{This paper extends a recent report on set visualization \cite{alsallakh2014visualizing}}
+, we survey state-of-the-art techniques for visualizing sets.
+After discussing several characteristics of set-typed data (Sect.~\ref{sec:datatype}) and tasks related to them (Sect.~\ref{sec:tasks}), % (Sect.~\ref{sec:tasks}),
+we provide an overview and a categorization of these techniques (Sect.~\ref{sec:survey}) based on the visual metaphors they use.
+In addition, we compare these techniques by their advantages and limitations, and by the tasks they support (Sect.~\ref{sec:findings}).
+Finally, we identify challenges that require future research, along with possible opportunities to tackle them (Sect.~\ref{sec:future_challenges}).
+%This aims to support researchers in the field as well as visualization designers in developing appropriate techniques to visualize set-typed data for their desired applications, according to the tasks to be enabled.
+
+
+% Target Audience of the survey
+% - experts and novice researchers to the field
+% visualization designers and users
+
+\section{Sets and Set-typed Data}
+\label{sec:datatype}
+
+Sets have been traditionally studied by mathematicians and logicians as a foundational concept.
+A set is defined as a collection of unique objects, called the set elements.
+A key characteristic of this collection is that it does not impose an ordering of the elements.
+A family of sets, also called a set system, is a collection of subsets of a given set of elements.
+Such sets potentially overlap, making several relations between the sets possible such as containment, exclusion, and intersection.
+Cantor formalized  \emph{set theory} \cite{cantor1895beitrage} in the 19th century.
+This theory is concerned with various concepts related to sets, such as set algebra and set operations.
+
+In data analysis, sets have been mainly treated as a collection of data points, such as a subset of rows in a data table.
+Such subsets are usually used to define training and validation sets, or to store the results of search and clustering algorithms.
+In addition, set-theoretic operations such as intersection, union, difference, complement, Cartesian product and the power set are extensively used in relational databases to query elements and join multiple data tables.
+
+Despite the ubiquitous usage of sets in data analysis, sets have not been commonly treated as an own data type in InfoVis literature, unlike graphs and hierarchies.
+Set memberships are rather often abstracted as separate Boolean attributes.
+Freiler et al. \cite{Freiler2008Set} pointed to this lack, and proposed several ideas to support set-enabled visualizations.
+Treating set families as an elementary data type would contribute to a better understanding of their characteristics and the challenges associated with visualizing them.
+We refer to data that involves element-set memberships as \emph{set-typed data}.
+The data can also encompass additional attributes of the elements or the sets.
+In the following, we give examples of how set-typed data are represented and what special cases, specific features, similarity measures, and tasks are associated with them.
+
+\begin{figure}[t!]
+  \centering
+  \includegraphics[width=\linewidth]{images/set_typed_data.png}
+  \caption{\label{fig:set_typed_data}
+    Various forms of set-typed data:
+    (a) the cardinality of set relations,
+    (b) a multi-valued attribute (in grey),
+    (c) a membership list,
+    (d) Boolean attributes (in grey).
+}
+\end{figure}
+
+\subsection{Data Representation}
+\label{sec:datarep}
+
+There are several ways to represent a set family on the data level, depending on the information available.
+One way is to explicitly represent the relations between the sets in the family.
+% Except for the null subset, each element in the power set is a unique subset containing one or more sets from the set family.
+The data stores the absolute or relative size of the intersection of these sets (Fig.~\ref{fig:set_typed_data}a).
+This representation does not require information about the individual set elements, and is hence suited when this information is unavailable or when dealing with infinite sets.
+For example, when the sets represent events, relative sizes can be used describe joint probabilities for these events.
+Also, when the sets represent logical variables, the data can involve infinite sizes.
+
+When the number of elements in the set family is finite and their set memberships are available, three data structures for graphs can be used to represent these memberships.
+A multi-valued attribute can specify the sets to which each element belongs (Fig.~\ref{fig:set_typed_data}b), resembling adjacency lists.
+Alternatively, a table of element-set memberships can be used (Fig.~\ref{fig:set_typed_data}c), resembling an edge list.
+Boolean attributes representing the sets can also be used to specify which elements belong to them (Fig.~\ref{fig:set_typed_data}d), resembling an adjacency matrix.
+These representations illustrate a duality between the elements and the sets: by transposing the matrix,
+each set $S$ can be treated as an element that belongs to the dual sets corresponding to the elements of $S$.
+Also, adjacency lists can represent element lists as in the extensional definition of sets.
+
+
+Apart from set membership, further attributes of the element might need to be involved in the analysis.
+For example information about club members might encompass their age and sex.
+A special type of attribute is associated with the set membership, for example the membership date in each club.
+This means for each set, one such attribute is needed to store the set-dependent values.
+Certain techniques support visualizing set-dependent attributes (Sect.~\ref{sec:comparison_by_what}).
+
+An important notion in a family of sets is the \emph{set membership degree} of an element, which we refer to as the element's degree.
+This degree denotes the number of sets in the family the element belongs to.
+It corresponds to set cardinality in the dual representation of sets and elements.
+A related concept is the \emph{exclusive membership} to certain sets or set intersections.
+Many analysis tasks and visualization designs are concerned with the degree of certain elements and with exclusive membership, as we explain in Sect.~\ref{sec:tasks} and Sect.~\ref{sec:survey}.
+
+\subsection{Scope and Special Cases}
+\label{sec:scope}
+
+In general, the sets in a set family overlap, i.e., they have one or more intersection relations.
+When all sets are in exclusion relation, they exhibit no overlap and define groupings over the respective elements.
+If such sets cover all the elements, they define a classification of the elements into classes (also called partitioning).
+% Otherwise, a dummy set called 'none' can be created to group the remaining elements.
+In such cases, the set memberships can be represented by one categorical attribute that stores these classes.
+When the sets exhibit both exclusion and inclusion relations, but no intersections, they define a hierarchy over their elements.
+% Visualizing hierarchies is covered in recent studies \cite{schulz2011treevis} and is outside the focus of this report.
+We limit our survey to techniques for visualizing overlapping sets.
+Hence, visualizing hierarchies and non-overlapping groups is not covered in this report.
+
+A family of sets defined over a finite number of elements  is equivalent to a hypergraph whose hyperedges represent the sets.
+A hypergraph is usually drawn either in subset standard (Sect.~\ref{sec:region_based}) or in edge standard (Sect.~\ref{sec:nodelink}) \cite{makinen1990draw}.
+For more details about available drawing techniques, refer to graph drawing literature \cite{brandes2012path, buchin2010planar, kaufmann2009subdivision}.
+
+In some cases, there are constraints on possible intersection relations between the sets.
+One example is when an element can belong to a maximum of $k < m$ sets from a family of $m$ sets.
+Another example is when a set can intersect with $k$ other sets at most.
+It is important to identify and exploit such special cases, as some of the techniques presented in Sect.~\ref{sec:survey} can be simplified under such assumptions.
+
+%\subsection{Element Degree and Exclusive Membership}
+
+
+\subsection{Similarity Measures}
+\label{sec:similarity_measures}
+
+Many tasks related to set-typed data are concerned with finding which pairs of sets $S_1$ and $S_2$ exhibit higher similarity than other pairs, with regard to the number of shared elements between them $|S_1 \cap S_2|$.
+Several similarity measures between finite sets have been proposed in the literature.
+A symmetric measure was proposed by Jaccard \cite{hamers1989similarity}:
+\begin{center}
+$Jaccard(S_1, S_2) = |S_1 \cap S_2| / |S_1 \cup S_2|$
+\end{center}
+It has been employed in set visualization both explicitly to reveal set similarity as in Radial Sets (Fig.~\ref{fig:teaser}c) and implicitly for matrix reordering (Sect.~\ref{sec:matrix}).
+%ConSet is a matrix-based technique  that computes set concordance based on a
+% It reorders the matrix rows so that similar sets lie close to each other.
+Tversky \cite{tversky1977features} proposed a generalized index for set similarity that can replicate other measures by using different parameterizations.
+\begin{center}
+$Tversky(S_1, S_2) = \frac{|S_1 \cap S_2|}{|S_1 \cap S_2| + \alpha \cdot |S_1 \setminus  S_2| + \beta \cdot |S_2 \setminus S_1|}$
+\end{center}
+Using different values for $\alpha$ and $\beta$, many similarity measures can be replicated such as Dice's \cite{dice1945measures} and Tanimoto's \cite{tanimoto58} coefficients.
+It is also possible to weigh shared elements differently when computing the similarity. %, instead of just using their count.
+For example, elements of degree 2 in $S_1 \cap S_2$ can be weighed higher than other elements, as they belong exclusively to the overlap.
+Also, set-exclusive elements can be excluded when computing the denominator, especially in sparse families of sets that exhibit little overlap.
+An important issue with similarity measures is their sensitivity to the respective set sizes.
+Larger sets have higher probability of overlap, causing a bias in the above-mentioned measures.
+Applying the $\chi^2$ statistic can eliminate such bias \cite{alsallakh2013radial}.
+
+The choice of an appropriate similarity measure depends on the data, the tasks to be solved and the information to be communicated by the visualization.
+Depending on whether the chosen measure is symmetric or not, and on the value range it takes (e.g. $[0, 1]$ or $[-1, 1]$), different visual variables are appropriate for encoding set similarity, such as size \cite{krzywinski2009circos}, color \cite{alsallakh2013radial}, position \cite{liu2005visualization} or order \cite{kim2007visualizing}.
+Additionally, some techniques compute element-element similarities based on their set memberships, e.g. to optimize element ordering in matrix-based visualizations \cite{kim2007visualizing}.
+
+% Element-element similarity is computed in a similar way to reorder the matrix columns.
+
+
+% \begin{itemize}
+% \item Disjoint Sets => classification:
+% e.g. Visualizing graphs and clusters as maps \cite{gansner2010visualizing}
+% \item Proper containment => Hierarchy.
+% \item Grouping: e.g.
+% Fluid Views: a zoomable search environment \cite{dork2012fluid}
+% \end{itemize}
+
+%   Could exist in combination with other types of data, e.g.:
+% \begin{itemize}
+% \item set in context geographic data
+% \item sets in context of time-varying data
+% \item sets in context of categorical data
+% \item sets in context of multi-dimensional data
+% \end{itemize}
+
+\subsection{Combinatorics of Sets}
+\label{sec:combinatorics}
+
+Given a family of $n$ sets $S = \left \{ S_1, ..., S_n \right \}$ defined over $m$ elements $E = \left \{e_1, ..., e_m \right \}$,
+an element can belong to one of $2^n$ possible set combinations based on its memberships to the $n$ sets.
+Each set combination $X$ is determined by $0 \le k \le n$ specific sets $\left \{S_{i_1}, ..., S_{i_k} \right \} \subseteq S$,
+and contains elements $E_X$ that belong to all of these sets, and none of the other sets:
+\begin{center}
+$E_X = \left \{e \in E : (\forall \hspace{2mm} {1 \le i \le n} : \ e \in S_i  \iff S_i \in X)\right\}$
+\end{center}
+It is important to notice that a set combination $E_X$ is contained but not necessarily equal to the intersection between these sets $\bigcap_{j=1}^{j=k} S_{j_k}$.
+This is because the latter does not exclude elements that do not belong to the other sets $S \setminus X$.
+
+The number of possible set combinations $|P(S)|$ is equal to the number of possible subsets of the set family: % ${S_1, ..., S_n}$:
+\begin{center}
+$|P(S)| = \left | \left  \{X : X \subseteq \{S_1, ..., S_n \} \right \} \right | = 2^n$
+\end{center}
+where $P(S)$ is the power set  of $S$.
+This number can be very large, even when the number of sets is in the order of tens.
+In practice, the majority of set combinations are empty, nevertheless, the number of non-empty set combinations can still be large.
+When the number of elements $m$ is finite, the number of non-empty set combinations $X : |X| > 0$ can be limited as follows:
+\begin{center}
+    $ \left | \left \{X \subseteq \{S_1, ..., S_n \} : |X| > 0 \right\} \right | \le min(m, 2^n)$
+\end{center}
+
+The number of set combinations of degree $k$ is equal to ${{n}\choose{k}}$.
+The set membership degree of the elements in all of these combinations is equal to $k$.
+% Each of these intersections might also contain elements from other sets too.
+% Elements of an intersection that do not belong to other sets constitute the set combination that includes
+
+% of $k$ (i.e. intersection between $k$ sets) is equal to ${{n}\choose{k}}$.
+% Each of these intersections might contain elements of other sets do
+% This is also equal to the number of set combinations to which the
+
+Set combinations are the smallest units that can be defined over the elements based on their memberships of the sets $S_1, ..., S_n$.
+A larger number of set-based queries $q_1(S), q_2(S), ...$ over the elements $E$ can be defined using these units.
+The result set $Q_i(S)$ of a query $q_i(S)$ is the union of the $t \geq 1$ units $X_{i_1}, ..., X_{i_t}$ that define it:
+\begin{center}
+$Q_i(S) = \bigcup_{j=1}^{j=t} X_{i_j}$
+\end{center}
+As each unit $X_i \in P(S)$ can either be contained in the query results or not,
+the number of possible queries $|Q(S)|$ based on their set memberships is hence equal to:
+\begin{center}
+$|Q(S)| = \left | \left  \{q_i(S) : q_i(S) \subseteq P(S) \right \} \right | = 2^{(2^n)}$
+\end{center}
+where $Q(S) = P(P(S))$ is the power set of $P(S)$.
+The number of all possible set-based queries can be very large even with a very small number of sets.
+For example, with $n = 4$ sets, the number of set combinations is equal to $2 ^ 4 = 16$,
+and the number of possible queries is equal to $2 ^ {16} = 65,536$.
+
+Different set-based queries might yield the same result set on given elements $E$,
+as many of the set combinations $X_1, X_2, ..$ involved in these queries might be empty.
+It is hence important not to confuse a set-based query $q_i(S)$ with its actual result set $Q_i(S)$, as the same query can yield different result sets for different data sets.
+It is also important not to confuse set-based queries with other possible queries over the elements $E$, and with the respective result sets.
+The number of unique result sets over $m$ elements is equal to:
+\begin{center}
+$|P(E)| = \left| \left  \{X : X \subseteq \{e_1, ..., e_m \} \right \} \right | = 2^m$
+\end{center}
+where $P(E)$ is the power set of the set of all elements $E$.
+
+The combinatorics of sets is one of the major challenges of set visualization, as it imposes scalability limits.
+It is important to take the large number of possible set combinations into consideration when designing set visualizations.
+As explained throughout the survey (Sect.~\ref{sec:survey}),
+some of the existing techniques aim to represent all of these combinations, while other techniques depict only aggregated information about set overlaps.
+Interaction plays a major role in reducing visual complexity, by enabling the exploration of certain set combinations on demand.
+It is also important to find out if a given analysis problem imposes constraints on element-set memberships and set relations.
+Such constraints often limit the number of possible set combinations, which allows for simpler and more scalable visualizations for the given problem.
+Besides, the challenge of representing set combinations,
+the combinatorics of sets imposes the challenge of defining set-based queries.
+As it is challenging to support all possible queries in a flexible and intuitive way, some compromises might need to be taken about which queries need to be supported.
+The query interface should be designed to support these queries, with visual feedback to support the user in defining and refining her set-based queries.
+
+
+\subsection{Modeling Problems using Sets - Examples}
+\label{sec:where_do_sets_come_from}
+The simple notion of sets, set relations, and set operations make them a powerful data model that can be applied in a variety of data analysis problems.
+The following list gives examples of how sets can be used to model problems from various domains.
+
+\begin{itemize}
+\item \textbf{Tags:}
+labeling a collection of items with tags is equal to defining multiple sets over these items.
+
+\item \textbf{Subscriptions:}
+many news and service providers allow users to receive new items and updates by subscribing to multiple areas of interests (often by selecting checkboxes).
+Each area of interest defines a set over the users who subscribe to it.
+
+\item \textbf{Votings:}
+in many voting scenarios, a voter can select one more candidates for a specific election.
+Each candidate defines a set over the voters who selected him / her.
+
+
+\item \textbf{Surveys:}
+some multiple-choice survey questions can be answered by selecting multiple answers (e.g. countries visited in the past).
+Each answer defines a set over the survey subjects who select this answer.
+
+\item \textbf{Probabilistic events:}
+sets are often used to reason about probabilities \cite{cheng2011probably}.
+Each probabilistic event can be modeled as a subset of the sets of all possible outcomes.
+
+\item \textbf{Fuzzy clustering:}
+a cluster can be modeled as a set over the data points.
+In fuzzy clustering, one point can belong to multiple clusters, which results in set overlaps.
+
+\item \textbf{Query results:}
+the items satisfying a query can be modeled as a set over all data items.
+It is possible to compare multiple query results by analyzing the corresponding set relations.
+
+\item \textbf{Meta search:}
+performing the same query using different search engines results in multiple result sets.
+Meta search combines these results using set union, and allows exploring which elements were retrieved by which engines  \cite{spoerri2004metacrystal}.
+
+\item \textbf{Faceted search:}
+this search paradigm allows defining queries over data items based on a number of search facets \cite{tunkelang2009faceted}.
+Each facet can be modeled as a set that contains data item that satisfy this facets  \cite{Alsallakh2014Towards}.
+
+\item \textbf{Multi-label classifications:}
+in many classification problems, an item can be classified into multiple classes at the same time.
+Each class defines a set over the items that belong to it.
+
+\item \textbf{Formal Concept Analysis (FCA)} \cite{ganter1999formal}
+makes use of concepts and their relations to reason about problems.
+These relations are analogous to set relations, when treating concepts as sets.
+
+\item \textbf{Genomics:}
+to analyze how genes belong to individuals,
+each individual can be modeled as a set that contains specific genes.
+Other Genomics problem can be modeled using sets such as relations between markers and genes.
+\end{itemize}
+
+After modeling a data analysis problem using sets,
+it is important to think about tasks that need to performed with these sets.
+Examples for this are given in the next section.
+
+
+\section{Common Tasks with Set-typed Data}
+\label{sec:tasks}
+
+When designing a visualization of set-typed data, it is important to determine which tasks it needs to support.
+Here we list general tasks addressed by the surveyed techniques, classified into the following categories.
+
+
+\subsubsection*{3.1. Tasks related to elements}
+
+These tasks are concerned with the membership of the elements in the sets.
+
+\begin{enumerate}
+
+  \renewcommand{\theenumi}{A\arabic{enumi}}
+
+  \item Find/Select elements that belong to a specific set.
+   
+  \item Find sets containing a specific element.
+
+  \item Find/Select elements based on their set memberships:
+    e.g. elements in $A$ and in $B$ but not in $C$.
+
+  \item Find/Select elements in a set with a specific set membership degree:
+    e.g. elements exclusive to the set or that also belong to two other sets.
+   
+    \item Filter out elements based on their set memberships.
+   
+    \item Filter out elements based on their set membership degrees:
+    e.g. filtering out elements exclusive to their sets, to focus on shared elements.
+   
+    \item Create a new set that contains certain elements.
+   
+\end{enumerate}
+
+
+\subsubsection*{3.2. Tasks related to sets and set relations}
+
+These tasks are concerned with higher-level reasoning about the sets without taking individual elements into account.
+Example tasks applied to sets $A$, $B$ and $C$ include:
+
+\begin{enumerate}
+
+    \renewcommand{\theenumi}{B\arabic{enumi}}
+
+  \item Find out the number of sets in the set family.
+
+  \item Analyze inclusion relations:
+    e.g. find out if a set $A$ is fully included in $B$, or in $B \cap C$, or in $B \cup C$.
+   
+  \item Analyze inclusion hierarchies:
+    e.g. find out if $A$ is included in $B$, and $B$ in turn is included in $C$ (and so on).
+
+  \item Analyze exclusion relations:
+    e.g. find out if $A$ does not intersect $B$, or $B \cap C$, or $B \cup C$.
+
+%    set containment (superset / subset relations)
+% the elements that have a specific degree in a set.
+
+  \item Analyze intersection relations:
+    e.g. find out if a certain pair of sets overlap, or if a certain group of sets overlap (i.e. have a non-empty intersection).
+   
+  \item Identify intersections between $k$ sets.
+   
+    \item Identify the sets that constitute a certain intersection.
+% BA: replaced involved with "`that constitute "`
+   
+  \item Identify set intersections contained in a specific set.
+% BA: replaced belonging with "`contained"`
+
+  \item Identify the set with the largest / smallest number of pair-wise set intersections.
+
+    % This can be generalized to compare groups of three or more sets.
+   
+  \item Analyze and compare set- and intersection cardinalities:
+    e.g. estimate $|A|$ or $|A \cap B|$, compare $|A|$ with $|B|$, or $|B \cap C|$, or $|B \cup C|$, and identify the set or set intersection with the largest or     smallest cardinality.
+
+  \item Analyze and compare set similarities:
+    e.g. find out which pairs of sets exhibit high or low similarity according to some similarity measure. % (Sect.~\ref{sec:similarity_measures}).
+
+
+  \item Analyze and compare set exclusiveness:
+    e.g. find out if $A$ contains more exclusive elements than $B$, or more elements shared with 1, 2, or 3 other sets.
+
+  \item Highlight specific sets, subsets, or set relations:
+    e.g. to emphasize them, and de-emphasize the remaining data.
+
+
+    \item Create a new set using set-theoretic operation:
+    e.g. create the complement of $A$, or $A \setminus B$ as a new set to compare with other sets.
+
+\end{enumerate}
+
+
+\subsubsection*{3.3. Tasks related to element attributes}
+
+Set-typed data can encompass additional attributes of the elements.
+The following tasks are concerned with how the element memberships and attributes are inter-related.
+
+\begin{enumerate}
+  \renewcommand{\theenumi}{C\arabic{enumi}}
+    \item Find out the attribute values of a certain element.
+   
+
+    \item Find out the distribution of an attribute in a certain set or subset:
+    this aims to understand how the attribute correlates with element membership of this set.
+    Sometimes, the two attributes have a spatial reference and the elements are positioned accordingly as in maps or scatter plots (Sect.~\ref {sec:overlays}).
+    In this case, the task supports estimating the spatial distribution of a set \cite{kelp2012}.
+
+    \item Compare the attribute values between two sets or subsets:
+    e.g. the attribute distributions in two sets can be compared against each other.
+    Alternatively, summary values can be compared such as the mean, the median, or the dominant category.
+
+    \item Analyze the set memberships for elements having certain attribute values:
+    % this aims to find of these elements tend to belong to specific sets or subsets.
+    e.g. find out if these elements appear more frequently or less often in certain sets / subsets.
+   
+
+    \item Create a new set out of elements that have certain attribute values:
+    this set represents a query on the elements based on their attributes.
+    Shneiderman emphasized the importance of supporting such queries in his task taxonomy \cite{shneiderman1996eyes} and the role of set-theoretic operations to combine multiple constraints on the attribute values.
+
+\end{enumerate}
+In the next section we survey state-of-the-art techniques that address the generic tasks listed above.
+A number of other tasks are also concerned with set-typed data such as hierarchical clustering of the sets or the elements,
+comparing multiple instances of a set family, and analyzing changes in the data over time.
+Such tasks are often application-specific and require dedicated techniques, and hence are not addressed explicitly in this survey.
+% (though some of the surveyed techniques partially support them).
+% T1a determine the position of an element
+% T1b find an element by position (relative to landmarks)
+% T1c estimate the density of elements in an area
+% T2c estimate the spatial distribution of a specific set
+
+%\subsection{Aspects}
+%\begin{itemize}
+%
+%    \item Layout techniques
+%    \item Visual Analytics / Reasoning (used also for visual languages, diagrammatic reasoning)
+%    \item Perceptual / Cognitive principles
+%    \item find more aspects from literature
+%    \item Interactivity
+% \end{itemize}
+
+\section{A Survey of Set Visualization Techniques}
+\label{sec:survey}
+
+We conducted this survey by examining the titles published in the main visualization conferences and journals as listed in the supplementary material.
+% \footnote{This includes the following  conferences and journals: AVI, Diagrams, EuroVis, GraphDrawing, InfoVis, VAST, IV, PacificVis, VL/HCC, CGF, IVS, JVLC, and TVCG.}.
+After identifying relevant articles, we extended the search to further articles citing them in other venues.
+We classified the techniques we found into seven categories according to the main visual representation they use for depicting set relations.
+% This resulted in seven categories described in %Sect.~\ref{sec:eulervenn} to  Sect.~\ref{sec:computational}
+The techniques in each category exhibit similar scalability and readability properties as well as design considerations.
+Also, certain tasks are better supported by a certain category of techniques as we discuss in Sect.~\ref{sec:findings}.
+The following subsections list the seven visual categories and describe the techniques in each of them.
+Certain techniques, however, might belong to multiple categories.
+% We classify these techniques by their dominant visual representation used.
+% Links to available software implementations or demonstrations and to additional resources about these techniques are available in the supplementary material and in the companion website \URL{http://www.setviz.net}.
+% , and share some design principles and tasks as we explain in the next sections.
+% \footnote{Available software implementations, demos and videos about the surveyed techniques are collected in the supplementary materials.}.
+% For each category and technique, we discuss various aspects including scalability, readability, design considerations and their effectiveness of specific tasks.
+
+
+\subsection{Euler and Venn Diagrams}
+\label{sec:eulervenn}
+
+Euler and Venn diagrams are amongst the oldest \cite{Baron1969} and most popular set visualizations. Sets are represented by labelled closed curves (of various shapes e.g. circles, ellipses or polygons) and set relations are depicted by the curve overlaps.
+Any set inclusion, exclusion and intersection can be represented with an Euler diagram as there are no restrictions on how the curves overlap.
+A Venn diagram is a restricted form of an Euler diagram as it has to show all possible combinations of curve overlaps.
+Thus, Venn diagrams quickly become visually complex as more sets are depicted.
+
+The visual properties of Euler diagrams are simple yet perceptually powerful for depicting set relations \cite{Ware2012}. The closed curves clearly indicate set membership, as the perceptual tendency to organize space into regions is much stronger when indicated by closed curves than by proximity or similarity \cite{Palmer1992}. The set relations are also easily visible, as the closed curves pop out preattentively, particularly when smooth \cite{TreismanSouther1985, Koffka1935}.
+
+ 
+%The closed curves are preattentively processed and pop out as discrete objects \cite{TreismanSouther1985, Koffka1935}. This means the curves and their spatial relations are often easily visible, particularly when the curves are smooth \cite{TreismanGormican1988}. Closure is also a Gestalt perceptual grouping principle \cite{Koffka1935}. The perceptual grouping principle of common regions \cite{Palmer1992} is also stronger than others such as proximity and similarity \cite{Koffka1935}. Thus elements enclosed within a curve are more likely to be grouped together.
+
+Euler diagrams were originally used to teach categorical propositions and syllogisms \cite{Euler1768}. They are still used to teach set theory, but are now also used in areas such as genetics and proteomics \cite{MannMann2011,ReidEtAl2011} and reasoning systems \cite{Stapleton2005}.
+An Euler diagram is \emph{well-matched} to what it represents when the spatial relationships between the curves precisely reflect the set relations \cite{SathiyanarayananHowse2014}.
+Euler diagrams are most effective when they are well-matched \cite{Gurr1999}, however, this cannot always be achieved without less effective aesthetics \cite{SathiyanarayananHowse2014}.
+%They are mostly effective when \emph{well-matched} to what they represent, so the spatial relationships between the curves precisely reflect the relationships between the sets they represent \cite{Gurr1999}.
+% However, diagrams cannot always be drawn without using less effective aesthetics.
+%(discussed later in Sec.~\ref{sec:ED_aesthetics}).
+
+%Such diagrams are more effective \cite{Gurr1999} and provide facts for free without inferencing \cite{BarwiseShimojima1995} (e.g. in the case of transitive relationships).
+
+%Euler diagrams are \emph{well-matched} to what they represent, as the spatial relationships between the curves precisely reflect the relationships between the sets they represent. This means they are likely to be intuitive and effective \cite{Gurr1999}, thus facilitate reasoning \cite{StenningOberlander1995} even for laymen \cite{Euler1768} and provide facts for free \cite{BarwiseShimojima1995} (e.g. if an Euler diagram is drawn to show that set B is a subset of set A and set C is a subset of B, then the diagram reveals that C is also a subset of A, without having to infer this from the known facts). In fact, they have been used for various reasoning systems \cite{Stapleton2005}.
+
+%However, drawing well-matched Euler diagrams is difficult. Various well-matched Euler diagrams cannot be drawn unless the curves are jagged and/or the diagram is not \emph{well-formed} (e.g. a curve segment is concurrent with a segment of at least one other curve, as in Fig.~\ref{fig:ED_wellmatched}a; properties that make a diagram well-formed are discussed by Rodgers et al. \cite{RodgersEtAl2012_wellformedness}). Studies indicate that diagrams with 'jagged' curves whose direction changes abruptly \cite{BenoyRodgers2007} and not well-formed diagrams \cite{RodgersEtAl2012_wellformedness} are difficult to understand.
+
+Various automatic drawing techniques that generate Euler diagrams with different aesthetic features and for different types of data have been developed. We provide an overview of implemented techniques in Table~\ref{table:ED_aesthetics+techs} and we discuss these further in the next sub-sections (see surveys on Venn \cite{RuskeyWeston1997} and Euler \cite{rodgers2013survey} diagrams for more details).
+
+%Here we focus on implemented techniques (see surveys on Venn \cite{RuskeyWeston1997} and Euler \cite{rodgers2013survey} diagrams for more details).
+
+
+
+
+%& $\times$ & $\checkmark$
+
+% \parbox[t]{2mm}{\rotatebox[origin=c]{90}{Overlays}} &
+
+
+\begin{table}[ht]
+  \centering
+  \caption{Features of implemented automatic drawing techniques for Euler and Venn diagrams.}
+    \label{table:ED_aesthetics+techs}
+   
+    {\small
+\hfill{}
+\captionsetup{singlelinecheck=off,labelfont=bf,labelsep=space}
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{3pt}
+
+\begin{tabular}{| c | c | c c | c c c | c | c c | c |}
+\hline
+{\rotatebox[origin=c]{90}{for any relation}} &
+{\rotatebox[origin=c]{90}{\# of curves}} &
+{\rotatebox[origin=c]{90}{well-matched}} &
+{\rotatebox[origin=c]{90}{well-formed}} &
+{\rotatebox[origin=c]{90}{smooth curves}} &
+{\rotatebox[origin=c]{90}{curve shape}} &
+{\rotatebox[origin=c]{90}{symmetric curves}} &
+% \multicolumn{3}{t} {curve  \rotatebox[origin=c]{90}{well-formed}} &
+% \multicolumn{3}{c}{\rotatebox[origin=c]{90}{Curves}}} &
+{\rotatebox[origin=c]{90}{region shading}} &
+{\rotatebox[origin=c]{90}{area-proportional}} &
+{\rotatebox[origin=c]{90}{\parbox[t]{23mm}{\hspace{1mm} cardinality glyphs}}} &
+\parbox[c]{15mm}{example techniques}
+\\
+%[.5ex]
+% relations &
+% curves &
+% well-matched &
+% well-formed &
+% smooth &
+% shape &
+% symmetric &
+%%same set &
+%shaded &
+%%same relation &
+%area &
+%\# of glyphs &
+%examples \\
+\hline
+$\checkmark$ & %for any relations
+any &  %no of curves
+$\checkmark$ & %well-matched
+  & %well-formed
+  & %smooth curves
+polygon & %curve shape
+& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+  & %set card area
+  & %set card glyphs
+%\shortstack{\\ \cite{StapletonEtAl2011_inductive, Simonetto2009Fully} \\ \cite{RodgersEtAl2008_general}} %tech egs
+\cite{StapletonEtAl2011_inductive, Simonetto2009Fully}
+\\
+ 
+$\checkmark$ & %for any relations
+any &  %no of curves
+$\checkmark$ & %well-matched
+  & %well-formed
+$\checkmark$  & %smooth curves
+circle & %curve shape
+$\checkmark$& %symmetric curves
+%$\checkmark$ & %same set curves
+  & %shaded regions
+%  & %same relation regions
+  & %set card area
+  & %set card glyphs
+\vbox to 15pt {\hbox{\shortstack{\\\cite{StapletonEtAl2012}\\(no shading)} }\vss}
+% \shortstack{\\\cite{StapletonEtAl2012}\\(no shading)}
+  %tech egs
+\\
+
+$\checkmark$ & %for any relations
+any &  %no of curves
+ & %well-matched
+$\checkmark$  & %well-formed
+$\checkmark$  & %smooth curves
+circle & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+$\checkmark$  & %shaded regions
+%  & %same relation regions
+  & %set card area
+  & %set card glyphs
+\cite{StapletonEtAl2012} (shaded) %tech egs
+\\
+\hline
+%  & %for any relations
+% any &  %no of curves
+% $\checkmark$ & %well-matched
+% $\checkmark$  & %well-formed
+% $\checkmark$  & %smooth curves
+% circle & %curve shape
+% $\checkmark$& %symmetric curves
+% % & %same set curves
+%   & %shaded regions
+% %  & %same relation regions
+%   & %set card area
+%   & %set card glyphs
+% \cite{StapletonEtAl2011_piercings}  %tech egs
+% \\
+
+ & %for any relations
+any &  %no of curves
+$\checkmark$ & %well-matched
+$\checkmark$  & %well-formed
+  & %smooth curves
+polygon & %curve shape
+& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+  & %set card area
+  & %set card glyphs
+\cite{FlowerHowse2002}  %tech egs
+\\
+
+ & %for any relations
+3 &  %no of curves
+$\checkmark$ & %well-matched
+$\checkmark$  & %well-formed
+$\checkmark$  & %smooth curves
+circle & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{LittlefieldMonroe2013,ChowRodgers2005}  %tech egs
+\\
+\hline
+$\checkmark$ & %for any relations
+any &  %no of curves
+ & %well-matched
+  & %well-formed
+$\checkmark$  & %smooth curves
+circle & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{Wilkinson2012}  %tech egs
+\\
+
+ & %for any relations
+3 &  %no of curves
+$\checkmark$ & %well-matched
+$\checkmark$  & %well-formed
+$\checkmark$  & %smooth curves
+ellipse & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{MicallefRodgers2014_eulerAPE}  %tech egs
+\\
+
+$\checkmark$ & %for any relations
+any &  %no of curves
+ & %well-matched
+  & %well-formed
+  & %smooth curves
+polygon & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{KestlerEtAl2008}  %tech egs
+\\
+ 
+ & %for any relations
+3 &  %no of curves
+$\checkmark$ & %well-matched
+  & %well-formed
+  & %smooth curves
+polygon & %curve shape
+& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{RodgersEtAl2010_convex, ChowRuskey2004}  %tech egs
+\\
+ 
+$\checkmark$  & %for any relations
+any &  %no of curves
+$\checkmark$ & %well-matched
+  & %well-formed
+  & %smooth curves
+polygon & %curve shape
+& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{ChowRuskey2005}  %tech egs
+\\
+ 
+$\checkmark$ & %for any relations
+1-3 &  %no of curves
+$\checkmark$ & %well-matched
+  & %well-formed
+  & %smooth curves
+\vbox to 15pt {\hbox{\shortstack{\\circle\\polygon} }\vss}     & %curve shape
+% \shortstack{\\} & %curve shape
+& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+$\checkmark$  & %set card area
+  & %set card glyphs
+\cite{RodgersEtAl2014}  %tech egs
+\\
+ \hline
+ & %for any relations
+3 &  %no of curves
+ & %well-matched
+$\checkmark$  & %well-formed
+$\checkmark$  & %smooth curves
+circle & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+  & %set card area
+$\checkmark$  & %set card glyphs
+\cite{Clark2008}  %tech egs
+\\
+ 
+ & %for any relations
+3 &  %no of curves
+ & %well-matched
+  & %well-formed
+$\checkmark$  & %smooth curves
+ellipse & %curve shape
+$\checkmark$& %symmetric curves
+% & %same set curves
+  & %shaded regions
+%  & %same relation regions
+  & %set card area
+$\checkmark$  & %set card glyphs
+\cite{MicallefEtAl2012}  %tech egs
+\\
+
+\hline
+ 
+\end{tabular}}
+\hfill{}
+\end{table}
+
+
+
+
+\subsubsection{Well-formedness and Aesthetics}
+\label{sec:ED_aesthetics}
+Studies indicate that the layout of the Euler diagram and its aesthetics affect user comprehension. An effective Euler diagram should be well-formed  \cite{RodgersEtAl2012_wellformedness}, as in Fig.~\ref{fig:ED_wellmatched}a. A \emph{well-formed} Euler diagram has: simple curves that meet at most at one point in which case the curves cross; every set is represented by at most one curve; every set relation is represented by at most one region. Diagrams with concurrent curves or more than one curve for a set or more than one region for a set relation are the least effective for human comprehension \cite{RodgersEtAl2012_wellformedness}. Nevertheless, well-matchedness is more important than well-formedness \cite{chapman2014visualizing}.
+
+Euler diagrams with non-smooth curves or curves that are close to one another impede understanding \cite{BenoyRodgers2007}. Those drawn with circles are the most effective, but if circles cannot be used, the curves should be highly symmetric and the shape of the regions should be highly distinguishable from that of the curves \cite{BlakeEtAl2014}. The orientation of Euler diagrams does not impact diagram understanding and thus, orientation could be disregarded when drawing or evaluating particular aesthetics of these diagrams \cite{BlakeEtAl2012}.
+
+As illustrated in Table~\ref{table:ED_aesthetics+techs}, it is not always possible for a drawing technique to satisfy all of these aesthetic criteria. This often depends on whether the technique draws diagrams for any or for only specific types of set relations.
+
+
+\subsubsection{Techniques for Any Set Relations}
+\label{sec:ED_generaltechs}
+The techniques that draw well-matched diagrams for any set relations are often not well-formed and have non-smooth curves (e.g. \cite{ StapletonEtAl2011_inductive, Simonetto2009Fully, RodgersEtAl2008_general}), as in Fig.~\ref{fig:ED_wellmatched}a. The smoothness, shape and closeness of the curves of the generated diagram could be further improved by other methods (e.g. \cite{MicallefRodgers2014_eulerForce,FlowerEtAl2003}), as shown in Fig.~\ref{fig:ED_layout_fd}, but not well-formed diagrams are likely to remain not well-formed. Multiple curves representing the same set can be used to draw well-matched Euler diagrams with circles (e.g. \cite{StapletonEtAl2012}). %, but as discussed previously, such diagrams are amongst the hardest for human comprehension.
+
+Techniques that draw well-formed Euler diagrams for any set relations often have smooth and highly symmetric curves like circles. However, the generated diagrams are not well-matched, as regions representing unwanted set relations are shown. The regions corresponding to these set relations are often shaded (e.g. \cite{StapletonEtAl2012,Venn1880}), as in Fig.~\ref{fig:ED_wellmatched}b, or left empty while glyphs are placed in the other regions (e.g. \cite{MicallefEtAl2012,Clark2008}), as in Fig.~\ref{fig:ED_glyphs}.
+However, shading was shown to be less effective than well-matchedness with respect to human accuracy and time \cite{chapman2014visualizing}.
+% a recent study indicates that well-matchedness is more important than well-formedness \cite{chapman2014visualizing}.
+% However, a recent study indicates that well-matched diagrams are more effective than not well-matched diagrams with shading with respect to human accuracy and time
+% \cite{chapman2014visualizing}.
+
+%\emph{General} techniques draw Euler diagrams for any set relations.
+
+% BA Avoid 1-sentence paragraphs
+%A few draw well-matched diagrams that are often not well-formed and whose curves are typically not smooth (e.g. \cite{RodgersEtAl2008_general, StapletonEtAl2011_inductive, Simonetto2009Fully}), as in Fig.~\ref{fig:ED_wellmatched}a.
+% BA Avoid 1-sentence paragraphs
+%Others draw not well-matched diagrams to avoid not smooth curves and/or not well-formed diagrams. This means that either required set relations are not depicted (e.g. \cite{Wilkinson2012}) or unwanted set relations are depicted. In the latter case, the corresponding regions are often shaded (e.g. \cite{StapletonEtAl2012}), as in Fig.~\ref{fig:ED_wellmatched}b, or glyphs are placed in the regions of the required set relations (e.g. \cite{Clark2008, MicallefEtAl2012}), as in Fig.~\ref{fig:ED_glyphs}. Any relationships between any number of sets can be represented using a Venn diagram with shaded regions \cite{RuskeyWeston1997}. 
+
+
+\subsubsection{Techniques for Specific Set Relations}
+\label{sec:ED_restrictedtechs}
+
+A number of techniques generate a diagram for only those set relations for which a well-matched and well-formed Euler diagram can be drawn. No diagram is generated for other set relations. Thus when generated, the diagrams are more likely to have aesthetic features that aid comprehension, particularly when the curves are circles (e.g. \cite{StapletonEtAl2011_piercings}) rather than irregular polygons (e.g. \cite{FlowerHowse2002}).
+
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.98\linewidth]{images/ED_wellmatched}
+  \caption{\label{fig:ED_wellmatched}
+(a) A well-matched Euler diagram that is not well-formed and whose curves are not smooth \cite{RodgersEtAl2008_general}, and (b) a not well-matched Euler diagram with shading that is well-formed and has smooth curves \cite{StapletonEtAl2012}.
+}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.98\linewidth]{images/ED_layout_fd.pdf}
+  \caption{\label{fig:ED_layout_fd}
+The layout improvement technique eulerForce \cite{MicallefRodgers2014_eulerForce} converts (a) to (b).}
+\end{figure}
+
+
+%\emph{Restricted} techniques draw Euler diagrams for specific types of set relations only, to ensure that the generated diagrams are well-matched and have desired aesthetic features that could aid comprehension.
+ 
+%Various techniques are restricted to the class of set relations for which a well-formed Euler diagram can be drawn (e.g. \cite{StapletonEtAl2011_piercings,FlowerHowse2002}
+%% LM: \cite{FlowerEtAl2008} would be really good to mention but it they only provide a high level algorithm of the drawing method and thus it is not implemented. For this reason, I replaced it with RodgersEtAl2008_embedding which was implemented.
+%). Others restrict the shape of the curves, e.g. to circles \cite{StapletonEtAl2011_piercings} or ellipses \cite{MicallefRodgers2014_eulerAPE}.
+ 
+
+%\subsubsection{Layout Improvement Techniques}
+%\label{sec:ED_layouttechs}
+%\emph{Layout improvement} techniques transform a diagram into another one that has the same spatial relationships between the curves as the original, but its layout satisfies or improves specific aesthetic features.
+
+%Two techniques are available. Flower et al.'s \cite{FlowerEtAl2003} allows the user to choose which of their predefined aesthetic features should be optimized and to provide a weight for each one.
+%These features include: curve roundness, smoothness and closeness to one another; similarly sized and easily visible curves and regions; region smoothness and convexity; total diagram area.
+%Micallef and Rodgers' eulerForce \cite{MicallefRodgers2014_eulerForce} uses a force-directed approach to produce improved layouts with smooth, regular curves and, if possible, similarly shaped curves and adequately sized regions (Fig.~\ref{fig:ED_layout_fd}).
+
+
+%\begin{figure}[htb]
+%  \centering
+%  \includegraphics[width=\linewidth]{images/ED_layout_fd.pdf}
+%  \caption{\label{fig:ED_layout_fd}
+%The layout improvement technique eulerForce %\cite{MicallefRodgers2014_eulerForce} converts (a) to (b).}
+%\end{figure}
+
+
+
+%\subsubsection{Techniques Using Existing Layouts}
+%\label{sec:ED_usingexistingtechs}
+%Techniques that \emph{use existing layouts} add curves to a diagram to produce another diagram for different set relations.
+
+%Stapleton et al \cite{StapletonEtAl2008_existing} technique is the only one of this kind. This could be helpful in systems (e.g. for logical reasoning) where diagrams are often adapted. If the existing diagram has desired properties (e.g. well-matched, well-formed, smooth curves), the new diagram is more likely to be as desired, for at least the majority of the curves.
+
+
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=\linewidth]{images/ED_APegs.png}
+  \caption{\label{fig:ED_APegs}
+Area-proportional Venn diagrams drawn with: (a) circles \cite{LenzFornoni2006} using 3 Circle Venn \cite{ChowRodgers2005}; (b) polygons \cite{BaileyEtAl2013} using Convex Venn-3 \cite{RodgersEtAl2010_convex}; (c) and (d) ellipses using eulerAPE \cite{MicallefRodgers2014_eulerAPE} for the numeric data in respectively a and b.
+}
+\end{figure}
+
+
+\begin{figure*}[ht]
+  \centering
+  \includegraphics[width=0.92\linewidth]{images/ED_glyphs.PNG}
+  \caption{\label{fig:ED_glyphs}
+Euler diagrams with glyphs: (a) TwitterVenn \cite{Clark2008}, (b)-(c) eulerGlyphs \cite{MicallefEtAl2012}, (d) Brath's \cite{Brath2012}.
+}
+\end{figure*}
+
+\subsubsection{Techniques for Large Euler Diagrams}
+Shneiderman's information seeking mantra \cite{shneiderman1996eyes} of overview first, zoom and filter, then details on demand has been adopted to facilitate navigation in large Euler diagrams that do not fit on a standard office computer screen \cite{DelaneyEtAl2014}. However, very sparse diagrams with few overlaps (that are more likely to be considered as a group of multiple small Euler diagrams rather than one) have been considered and no evaluation has been conducted. A study indicates that the greater the number of overlaps between the curves of large Euler diagrams (with more than six curves), the harder it is to understand the depicted sets and set relations \cite{AlqadahEtAl2014}. Thus, more sophisticated techniques should be devised and evaluated for Euler diagrams with a large number of curves and equally large number of overlaps.
+
+\subsubsection{Techniques for Area-proportional Diagrams}
+\label{sec:ED_aptechs}
+Euler diagrams can be \emph{area-proportional}, such that the area of each region in the diagram is directly proportional to the cardinality of the depicted set relation. Differences in these cardinalities are easily noted \cite{TreismanGelade1980}. However, it is difficult and often impossible to draw accurate area-proportional diagrams with aesthetic features that aid comprehension.
+
+Current techniques differ mainly in the shape used for the curves. Most techniques use circles (e.g. \cite{LittlefieldMonroe2013, Wilkinson2012, ChowRodgers2005}) to facilitate user comprehension. However, circles have limited degrees of freedom and so, the generated diagrams are less likely to have accurate region areas.
+% with respect to the required data.
+This is particularly problematic for Venn diagrams, as an accurate area-proportional Venn diagram can be drawn for any data with only two sets \cite{Chow2007}.
+Most circle-based techniques can produce misleading diagrams, e.g. in Fig.~\ref{fig:ED_APegs}a, the region with 1 is larger than that with 3 and the region with 25 is larger than that with 29.
+
+%or with missing regions corresponding to set relations in the depicted data.
+
+Other techniques use polygons (e.g. rectilinear curves \cite{ChowRuskey2004}, 4- or 5-sided convex curves \cite{RodgersEtAl2010_convex}, irregular curves \cite{ChowRuskey2005}) to generate accurate diagrams for most data. However, these diagrams are often difficult to comprehend, as they are not well-formed and have non-smooth and non-symmetric curves, as in Fig.~\ref{fig:ED_APegs}b. Techniques that use regular polygons (e.g. \cite{KestlerEtAl2008}) produce symmetric curves, but have the same limitations as those using circles.
+
+A recent technique, eulerAPE, uses ellipses \cite{MicallefRodgers2014_eulerAPE}. Ellipses are smooth like circles, but have two more degrees of freedom. This means, the generated diagrams are more likely to be accurate and aesthetically desirable, as demonstrated by eulerAPE's evaluation for 3-set data, and Fig.~\ref{fig:ED_APegs}c and Fig.~\ref{fig:ED_APegs}d. Techniques to accurately and instantaneously compute the region areas of multiple intersecting ellipses are now also available \cite{MicallefRodgers2014_ED}.
+
+Current techniques often draw diagrams with only two or three curves and do not allow any regions with zero area.
+Exceptions include: venneuler \cite{Wilkinson2012}, which draws often inaccurate diagrams with any number of curves using circles; Rodgers et al.'s \cite{RodgersEtAl2014} technique, which draws accurate diagrams with up to three curves using a mix of circles and convex and non-convex polygons.
+
+%However, most of the diagrams are likely to be difficult to comprehend as only 37.5\% of all the possible Euler diagrams with up to three curves can be drawn with circles \cite{RodgersEtAl2014}.  
+
+
+
+%Many techniques draw these diagrams with circles (e.g. \cite{ChowRodgers2005, LittlefieldMonroe2013, Wilkinson2012}).
+%As noted in Wilkinson's informal survey \cite{Wilkinson2012}, circles are preferred over other shapes, possibly due to their regularity and good continuation.
+%However, circles have limited degrees of freedom and so, no technique that uses circles can generate a diagram with accurate region areas for any data.
+%This is particularly problematic for Venn diagrams, as Chow demonstrated that an accurate area-proportional Venn diagram can be drawn for any data with two sets but not three \cite{Chow2007}.
+%In fact, most circle-based techniques produce misleading diagrams with inaccurate areas like Fig.~\ref{fig:ED_APegs}a (e.g. the region with value 3 is much smaller than that with 4) or with missing regions corresponding to set relations in the depicted data.
+
+%Some alternative techniques use polygons (e.g. rectilinear curves \cite{ChowRuskey2004}, 4- or 5-sided convex curves \cite{RodgersEtAl2010_convex}, irregular curves \cite{ChowRuskey2005}) to ensure that the generated diagram is accurate for most data. However, these diagrams are often difficult to comprehend as the curves are not smooth and lack good continuation, like those in Fig.~\ref{fig:ED_APegs}b. Techniques that use regular polygons (e.g. \cite{KestlerEtAl2008}) have the same limitations as those using circles.
+
+%A recent technique eulerAPE \cite{MicallefRodgers2014_eulerAPE} uses ellipses. Ellipses are smooth like circles, but have more degrees of freedom. This means, the generated diagrams are more likely to be accurate as well as intuitive, as demonstrated by eulerAPE's evaluation for 3-set data, and Fig.~\ref{fig:ED_APegs}c.
+
+
+%Most of the current techniques for area-proportional diagrams are limited to two or three curves and very few allow certain regions with zero area. venneuler \cite{Wilkinson2012} draws area-proportional Euler diagrams with any number of curves, but since it uses circles, most of the generated diagrams are inaccurate. Rodgers et al.'s \cite{RodgersEtAl2014} technique draws accurate area-proportional Euler diagrams with up to three curves for any data. It uses circles whenever possible, convex polygons if circles cannot be used, and non-convex polygons if convex polygons cannot be used. However, most of the diagrams are likely to be difficult to comprehend as only 37.5\% of all the possible Euler diagrams with up to three curves can be drawn with circles \cite{RodgersEtAl2014}.  
+
+
+
+\subsubsection{Techniques for Euler Diagrams with Glyphs}
+\label{sec:ED_glyphstechs}
+Humans are biased to area judgement \cite{ClevelandMcGill1984}. Hence, techniques have been devised to generate Euler diagrams with \emph{glyphs}, such that glyphs (not area) indicate the cardinality of the set relations, while the curves depict the set relations.
+
+Equally-sized glyphs that are directly proportional in number to the cardinality of the set relations are typically placed in the corresponding regions of the diagram. TwitterVenn \cite{Clark2008} draws such diagrams to depict the number of twitter messages that used any of two or three user-selected words (Fig.~\ref{fig:ED_glyphs}a).
+%The not area-proportional curves represent the words, while the glyphs represent the number of corresponding messages.
+eulerGlyphs \cite{MicallefEtAl2012} draws similar diagrams with randomly or uniformly positioned glyphs and curves that are either area-proportional or not for Bayesian problems to reduce fallacious reasoning (e.g. Fig.~\ref{fig:ED_glyphs}b-c).
+%Diagrams with equally-sized glyphs include: area-proportional ones with randomly positioned glyphs; not area-proportional ones with uniformly positioned glyphs (Fig.~\ref{fig:ED_glyphs}b); not area-proportional ones with blocks of glyphs positioned as in a frequency grid (Fig.~\ref{fig:ED_glyphs}c).  
+
+Differently-sized and multi-attribute glyphs can be used to depict different associated quantities \cite{Brath2012} (Fig.~\ref{fig:ED_glyphs}d), but no automatic drawing techniques have been devised.
+
+
+\begin{figure*}[th!]
+  \centering
+  \includegraphics[width=\linewidth]{images/euler_like.png}
+  \caption{\label{fig:euler_like}
+        Euler diagram variants:
+%        (a) fan diagram \cite{kim2007visualizing},
+        (a) Missing Pieces \cite{koshman2006metasearch},
+        (b) visualizing undrawable Euler diagrams \cite{simonetto2008undrawable},
+        (c, d) untangling Euler diagrams \cite{riche2010untangling} using set splitting (c), and element duplication (d).
+}
+\end{figure*}
+
+\subsubsection{Other Techniques}
+\label{sec:ED_othertechs}
+A technique that draws 3D Venn and Euler diagrams was recently introduced \cite{RodgersEtAl2012_3D}. Sketching software SketchSet \cite{WangEtAl2011} and SpiderSketch \cite{StapletonEtAl2011_spidersketch} were also devised to respectively generate Euler diagrams and Euler diagrams with graphs or shading from hand drawn sketches. A user interface, SetFusion, has been developed to allow users to interact with a recommender system and view the predicted recommendations in a Venn diagram \cite{ParraEtAl2014}. 
+%However, no interactive visualization techniques have be devised for Euler diagrams.
+Other available techniques draw Euler diagrams for: diagrammatic reasoning systems \cite{Stapleton2005} (e.g. spider diagrams \cite{HowseEtAl2005}); interactive diagrammatic theorem provers \cite{UrbasJamnik2014, UrbasJamnik2012, UrbasEtAl2012}; specifying constraints in a system \cite{StapletonDelaney2008}; visualizing and defining ontologies \cite{HowseEtAl2011_ontology, OliverEtAl2009_ontology}.
+
+
+\subsubsection{Diagram Design}
+
+Different designs have been used to draw Euler diagrams, but very few empirical studies have been conducted to assess their effectiveness.
+
+A different color per curve is often used. If the curve interior is not colored (e.g. Fig.~\ref{fig:ED_wellmatched}b), the curves in which a region is located might not be easily identified. If the curve interior is colored, transparency can be used (e.g., Fig.~\ref{fig:ED_wellmatched}a, Fig.~\ref{fig:ED_layout_fd}). However, the colors of the curves could perceptually fuse at overlaps and the colors of regions in the same curve could seem unrelated, giving the impression that they belong to different sets (e.g., Fig.~\ref{fig:ED_APegs}b). The same issue is evident when a different color per region is used, irrespective of whether the colors of regions in the same curve are somehow related (e.g. Fig.~\ref{fig:ED_APegs}a). In fact, a study suggests that Euler diagrams whose curves have a colored outline and no fill are easier to comprehend than ones whose curves have a black outline or a colored fill with transparency \cite{BlakeEtAl2014_colour}.
+
+A weaving approach \cite{luboschik2010new} has also been proposed, so a diagram like Fig.~\ref{fig:weaving}b is drawn instead of Fig.~\ref{fig:weaving}a. In contrast to other
+%Euler diagram
+drawing techniques, eulerAPE (Sect.~\ref{sec:ED_aptechs}) draws the curves using different visual feature channels (namely color, outline and texture, as in Figs.~\ref{fig:ED_APegs}c and d) so the curves are visually distinct and do not fuse perceptually. The curves in which the specific regions are located are thus easily identified. Also, by tuning one's attention to the feature type of a curve, other feature types recede and one can better focus on a specific curve representing a set \cite{Ware2012}. However, these two novel designs have been evaluated.
+
+
+\begin{figure}[hb!]
+  \centering
+  \includegraphics[width=\linewidth]{images/weaving.png}
+  \caption{\label{fig:weaving}
+        An Euler diagram filled using: (a) transparency, (b) weaving. \cite{luboschik2010new}
+    }
+\end{figure}
+
+% BA: LM mentioned an interactive web-based diagrams?
+% include spider diagrams.  => covered
+
+% A survey of Euler diagrams \cite{rodgers2013survey} => covered
+
+% Exact and Approximate Area-Proportional Circular {Venn} and {Euler} Diagrams \cite{Wilkinson2012} => covered!
+
+% Showing vs. not showing the single elements => covered
+% Visualizing attributes as glyphs => covered
+
+% What special (simple shapes) are doable? seems well covered
+
+% When are circles / elipses doable? => covered?
+
+% => What is the best coloring scheme to distinguish multiple sets?
+% Can color be used to show attributes? e.g. \cite{byelas2009visualizing}
+
+
+% \subsubsection{Comparative Studies with Other Set Visualizations}
+% We are aware of only one study that compared Euler diagrams with other set visualization techniques.
+% A recent study \cite{chapman2014visualizing} assessed Venn diagrams with shading, well-formed Euler diagrams with shading, not well-formed but well-matched Euler diagrams and linear diagrams (Sect.~\ref{sec:agg}).
+% (thus with no shading; e.g., Fig.~\ref{fig:ED+linear}a), and linear diagrams (explained later; e.g., Fig.~\ref{fig:ED+linear}b)
+% for 3-, 5- and 7-set
+% Fictitious dataset with a real-world context were used to evaluate tasks involving set intersection, inclusion and exclusion.
+% (film collections, subjects studied, or languages spoken)
+% Linear diagrams represent each set by a unique colour and a unique row containing the label of the set and one or more horizontal line segments which indicate the absence or presence of a specific combination of the sets, as shown in Fig.~\ref{fig:ED+linear}b.
+% The linear diagram outperformed all the three Euler diagrams variants with respect to accuracy and time.
+% The authors argue that such a result was obtained as linear diagrams:
+% (1) have a prescriptive planar layout constrained by Bertin's planar variables \cite{Bertin1983};
+% (2) use parallel line segments which are known to be effective for reasoning \cite{WagemansEtAl2012};
+% (3) are visually less complex than Euler diagrams.
+
+
+
+
+% \begin{figure}
+%  \centering
+%  \includegraphics[width=\linewidth]{images/ED+linear.png}
+% \caption{\label{fig:ED+linear}
+%        Two of the diagram types compared in a study \cite{ChapmanSRMB14}: (a) a not well-formed but well-matched Euler diagram, (b) a linear diagram. Both diagrams are representing the same 7-set data, %indicating the languages spoken by a group of people.
+%     }
+%\end{figure}
+
+
+
+\subsection{Euler Diagram Variants}
+\label{sec:euler_like}
+
+Several variations of Euler diagrams have been proposed for different purposes.
+Like Euler diagrams, these techniques use closed regions to represent the sets or subsets thereof.
+
+% The regions might overlap,
+%The inner circle represent the overlap between all three sets.
+
+\emph{Missing Pieces} \cite{koshman2006metasearch} use concentric rings for showing the results of three search engines (Fig.~\ref{fig:euler_like}a).
+The outer and middle rings include the elements retrieved by one or two engines, respectively.
+The inner ring includes elements retrieved by all three engines.
+The search results are represented as glyphs inside the respective regions and can be colored to encode additional attributes.
+\emph{Fan diagrams} \cite{kim2007visualizing} use a similar layout to visualize three sets (Fig.~\ref{fig:pie_and_fan}b).
+Instead of having a separate ring for pair-wise overlaps, these overlaps are placed between the respective parts in the outer ring.
+%The middle and outer ringr are merged together by placing pair-wise overlaps between the respective parts in the outer ring.
+% between the regions are depicted in the outer ring.
+%using area proportional fan-like regions (Fig.~\ref{fig:euler_like}a).
+
+
+To handle cases where Euler diagrams cannot be drawn, Simonetto et al. \cite{simonetto2008undrawable} proposed a drawing method based on the corresponding Euler graph.
+Set relations that cannot be represented in a proper Euler diagram are visualized by splitting or duplicating certain sets and subsets into disjoint parts, and connecting these parts using edges (Fig.~\ref{fig:euler_like}b).
+% In a follow-up work  \cite{Simonetto2009Fully}, the authors described an algorithm to generate such diagrams.
+
+Similar ideas were proposed to \emph{untangle} Euler diagrams \linebreak and ensure their drawability using simple rectangular shapes \cite{riche2010untangling}.
+Two variations, called \emph{ComED} and \emph{DupED} use set splitting and element duplication respectively.
+%They proposed two variations based on splitting and element duplication.
+\emph{ComED} splits a set into multiple rectangular parts, depending on how it overlaps with larger sets (Fig.~\ref{fig:euler_like}c).
+These parts are connected with hyperedges that preserve the continuity of the set regions, as in Euler diagrams.
+However, the hyperedges contain no elements and hence their mutual crossings represent no shared elements between the respective sets.
+The rectangular parts are arranged in a containment hierarchy that reveals several set relations.
+For example, in Fig.~\ref{fig:euler_like}c it is evident that all elements shared between the blue and the pink sets also belong to the green and purple sets.
+\emph{DupED} creates separate rectangular regions for the sets, and duplicates the elements that belong to multiple sets.
+Multiple instances of the same element are linked with hyperedges (Fig.~\ref{fig:euler_like}d).
+It outperforms \emph{ComED} in counting the sets, comparing their sizes, and assessing their intersections.
+However, \emph{ComED} scales significantly better in terms of visual complexity.
+
+\begin{figure*}[!th]
+  \centering
+  \includegraphics[width=\textwidth]{images/region_based.png}
+  \caption{\label{fig:region_based}
+           Region-based overlay techniques:
+                     (a) Bubble Sets showing groups of items over a timeline \cite{Collins2009Bubble},
+           (b) texture splatting to depict areas of interest  \cite{byelas2006visualization},
+           (c) convex hulls to depict clustering results of a social network in Vizster \cite{heer2005vizster}.
+                    }
+\end{figure*}
+
+
+\subsection{Overlays}
+\label{sec:overlays}
+
+%Augmenting Set Memberships over Existing Visualizations
+
+In many data analysis scenarios, the set memberships are a secondary information in the data that needs to be analyzed in the context of other data features.
+For example, when the elements have a spatial reference, they are often viewed on a map that provides context information about their locations.
+%Their set memberships are then augmented over the map using appropriate visual elements.
+Other examples are points in a scatter plot or nodes in a graph.
+Several techniques have been proposed to augment set memberships over the elements in an existing visualizations.
+These techniques can be classified into the following three categories, according to the visual elements they use.
+These categories can be used in combination as explained in the last sub-section.
+
+
+\subsubsection{Region-based Overlay Techniques}
+\label{sec:region_based}
+These techniques surround the elements of a set with a closed curve that defines a region.
+%The locations of the elements are determined according to some layout such as points .
+One element can belong to multiple regions if it belongs to multiple sets.
+
+
+\emph{Bubble Sets} \cite{Collins2009Bubble} constructs a contour (also named implicit surface) for every set so that it includes all of its elements and excludes all other elements if possible (Fig.~\ref{fig:region_based}a)).
+For this purpose it computes an energy map over the pixels in the convex hull containing the set elements.
+In a second step, it applies the marching squares algorithm to compute the implicit surface from the map.
+The sets are assigned semi-transparent colors to reveal their overlaps and to keep the context visualization visible.
+% Same as Euler diagrams, Bubble Sets represent each set by a closed region.
+Unlike Euler diagrams, two regions might overlap even if their sets share no elements.
+Such overlaps should be understood as artifacts that encode no information.
+An \emph{inverse distance-based potential field} \cite{Vihrovs2014AnInverse} alleviates these artifacts but might result in disconnected regions (Fig.~\ref{fig:region_based}b).
+Bubble sets were demonstrated to overlay set memberships over tens of elements in a scatter plot, a graph, or a map.
+Depending on the overlap extent, the technique can handle between 4 to 20 sets and still retains enough visibility of the context.
+
+\emph{Texture splatting} has been proposed to depict areas of interest (AOIs) in software architecture diagrams \cite{byelas2006visualization}.
+Splatting is applied to a skeleton constructed from the diagram elements according to their size and position.
+A post-processing step erases elements that incorrectly fall within a specific AOI.
+Overlaps between multiple AOIs are emphasized using subtractive color blending which creates darker overlapping regions (Fig.~\ref{fig:region_based}c).
+% A follow-up work \cite{byelas2009visualizing} uses texture and color to encode further software metrics about AOI elements.
+Splatting creates smooth boundaries and is applied there only, as it is computationally exhaustive.
+% \emph{Splatterplots} \cite{Mayorga2013Splatterplots} use a similar technique to abstract scatter plots containing a large number of dots that belong to different classes.
+% While one dot belong only to one class, but the regions created by this technique potentially overlap indicating non-separable classes.
+
+\emph{eXamine} \cite{dinkla2014examine} generates and displays set-based annotations as contours on top of a node-link diagram.
+It uses self-organizing maps to lay out nodes, links, and contours in a unified way.
+
+When the base visualization places elements that belong to the same set close together, simpler and more convex shapes can be used for the regions than in previous techniques.
+A typical case is when the sets indicate clustering results of a graph.
+%In such systems, the layout algorithm usually places nodes that belong to the same cluster close together, and as separate from the other clusters as possible.
+%VizSter exploits this fact by producing convex regions to encircle the nodes in the clusters.
+%It allows exploring the community structure at different levels of the clustering hierarchy interactively using a slider.
+\emph{Vizster} \cite{heer2005vizster} creates a region for each cluster by computing the convex hull of the nodes in it and interpolating the hull boundaries using a cardinal spline (Fig.~\ref{fig:region_based}d).
+If the clustering algorithm allows membership of multiple clusters, cluster overlaps are revealed by color.
+
+
+
+
+% H-BLOB: a hierarchical visual clustering method using implicit surfaces \cite{sprenger2000h}
+
+\begin{figure*}[!th]
+  \centering
+  \includegraphics[width=\textwidth]{images/line_based.png}
+  \caption{\label{fig:line_based}
+           Line-based overlay techniques:
+                    (a) LineSets \cite{linesets2011},
+                    (b) Parallel Tag Clouds \cite{collins2009parallel},
+                    (c)  Kelp Diagrams \cite{kelp2012},
+                    (d)     KelpFusion \cite{MeulemansEtAl2013_kelpfusion} uses a hybrid region- and line-based representation.
+                    }
+\end{figure*}
+
+\subsubsection{Line-based Overlay Techniques}
+\label{sec:line_based}
+
+To reduce the ink used in the overlay and the interference with the base visualization, many techniques use lines to represent set membership.
+% They connect the elements that belong to the same set with one or more connected lines.
+Elements that belong to the same set are shown by being present on one or more connected lines.
+% The use of lines instead of closed regions aim at minimizing the interference with the base visualization.
+
+\emph{LineSets} \cite{linesets2011} computes a line for each set that passes through its elements (Fig.~\ref{fig:line_based}a) using a travelling salesman heuristic that minimizes the line length.
+% The order in which the line passes through the respective points is computed based on a traveling salesma n heuristic that minimizes the line lengths.
+This in turn reduces self-crossings and bends, making it easier to follow the line.
+The lines are drawn as piecewise B\'ezier splines of different colors.
+% Two lines might cross at a location where no elements exists.
+As with region-based methods, not all line crossings represent set overlaps.
+Actual overlaps are marked with concentric rings around the elements color-coded according to the respective sets.
+Interaction makes certain lines salient, while the other lines are drawn thinner to reduce visual clutter.
+LineSets were shown to scale better than region-based methods and can overlay up to tens of sets over hundreds of elements.
+However, the use of simple lines imposes an artificial ordering on the set elements.
+
+ % This might be undesirable if the elements have no inherent order.
+% For example, if the sets represent metro lines and the elements represent metro stations, the lines are quite suited to depict the ordering of the stations.
+% Several techniques have been specifically proposed to produce metro maps \cite{nollenburg2011drawing, stott2011automatic, wu2012travel}. They allow displacing the station position to improve readability.
+
+
+\emph{Kelp Diagrams} \cite{kelp2012} connects the elements in a set using a graph structure instead of a simple line.
+It surrounds each element with a circle clipped to its Voronoi cell to avoid overlaps.
+Then it computes a tangent visibility graph based on these clipped circles.
+% It first computes a tangent visibility graph of the elements based on a Voronoi diagram of their positions.
+Finally, it constructs for each set a minimum cost path as a subgraph that connects its elements.
+This graph aims to capture the shape of a point set on a map.
+The links are routed so that no path contains elements that do not belong to the respective set.
+Two design alternatives were proposed to draw overlapping links:
+Nesting draws the links over each other, with thinner links on top to ensure visibility (Fig.~\ref{fig:line_based}c).
+The second design uses alternating stripes to indicate overlapping links (Fig.~\ref{fig:hybrid_overlays}c).
+
+
+%\clearpage
+
+In some cases, the base visualization represents the elements of each set separately, and hence creates multiple instances of the same element.
+An example of this are the \emph{parallel tag clouds} \cite{collins2009parallel} that represent multiple sets of tags (Fig.~\ref{fig:line_based}b).
+This technique connects multiple instances of the same tag with a thick path line.
+To avoid clutter, only the two ends of the edge connecting a tag instance with its next occurrence are depicted.
+The full segment is shown only for selected tags on demand.
+While it is hard to follow the instances of an unselected tag, the depicted edge ends reveal if such instances exist or not in parallel clouds.
+% mention similarity with untangled Euler diagrams? (Sect.~\ref{sec:euler_like}).
+The \emph{context-preserving visual links} \cite{steinberger2011context} are a generic technique that uses line overlays to link multiple instances of the same element in multiple coordinated views showing different visualizations.
+The layout algorithm routes the lines preferably within white space using a density map to minimize interference with the base visualizations.
+
+
+\subsubsection{Glyphs and Icons}
+
+In many cases, it is enough to represent the set memberships for the individual elements in the base visualization, without the need to represent each of the sets as a connected object.
+In this case, glyphs and icons can be used as simple overlays to represent the set memberships.
+Color-coding is commonly used for this purpose: each set is assigned a color from a qualitative (categorical) color scale.
+Membership of multiple sets can be indicated using multiple icons, color-coded glyphs, hatching, or color composition, depending on how the base visualization represents individual elements.
+\begin{figure}[b!]
+  \centering
+  \includegraphics[width=\linewidth]{images/glyph_based.png}
+  \caption{\label{fig:glyph_based}
+           Glyph-based overlay techniques:
+                    (a) DiTop \cite{oelke2014comparative},
+                    (b) color-coded bars and nodes \cite{Shen06BiblioViz, Itoh2009},
+                    (c) icons \cite{PubFinder},
+%                    (d) \cite{}.
+                %    (f) glyphs \cite{xu2013visual} to indicate correlations between the graph structure and set memberships.
+                    }
+\end{figure}
+
+
+\begin{figure*}[ht!]
+  \centering
+  \includegraphics[width=\textwidth]{images/hybrid_overlays.png}
+  \caption{\label{fig:hybrid_overlays}
+            Hybrid overlay techniques:
+                    (a) KelpFusion \cite{MeulemansEtAl2013_kelpfusion} combines lines and regions,
+                    (b) region hatching as with color-coded glyphs \cite{AfricaMap},
+                    (c) A variation of Kelp Diagrams \cite{kelp2012} that uses both lines and glyphs.
+                    }
+\end{figure*}
+
+
+When the element's representation has enough space, multiple color-coded dots or icons can be added in an appropriate location to indicate its set memberships.
+Example for this are \emph{SchemaLine} \cite{Nguyen2004SchemaLine} and \emph{DiTop} \cite{oelke2014comparative}.
+
+Pie-like glyphs are commonly used to compactly overlay set memberships when the elements are represented as circles, such as the nodes of a graph \cite{Itoh2009} (Fig.~\ref{fig:glyph_based}b).
+\emph{BiblioViz} \cite{Shen06BiblioViz} represents papers as bars in a time line, and overlays colored segments over the bars to represent multiple co-authors (Fig.~\ref{fig:glyph_based}e).
+However, dividing circles or bars of different sizes into colored segments might causes a bias regarding the order, size, and spatial distribution of these segments.
+Hatching techniques can alleviate these effects (Fig.~\ref{fig:hybrid_overlays}a-b).
+
+Color composition \cite{hurtado2013colored} uses new colors (e.g. purple) to indicate membership of multiple sets (e.g. both red and blue groups). However, this is restricted to two or three sets, as it is otherwise hard to memorize all possible color compositions.
+
+%there is no need to connect elements that belong to the set, in the base visualization
+
+The use of color can support the inference of the spatial distribution of the sets.
+Instead, the set memberships can be indicated using icons (Fig.~\ref{fig:glyph_based}d).
+This is appropriate when the sets represent real-world concepts that have corresponding icons such as flags or common signs.
+However, without interaction, a serial scan might be needed to find out elements that belong to a certain set.
+
+
+Other types of glyphs have also been devised for specific applications.
+For example, glyphs based on superimposed area charts \cite{xu2013visual} were proposed to encode how the distance between two nodes in a graph correlates with the number of set memberships shared between them (Fig.~\ref{fig:glyph_based}f).
+Also, \emph{MetaCrystal} \cite{spoerri2004metacrystal} uses polygonal glyphs to represent meta search results.
+The number of sides encodes how many search engines retrieved a specific document, with multiple colors encoding these engines.
+Finally, colored pie-like glyphs were proposed to visualize fuzzy membership of overlapping communities in networks \cite{vehlow2013visualizing}.
+
+
+% When the elements are not fixed to certain positions, other layouts can be used to emphasize the set relations and show the correlations afterwards.
+
+% Necklace maps? NO
+
+% include this? Visual exploration of combined architectural and metric information  \cite{termeer2005visual},
+
+\subsubsection{Hybrid Overlays}
+
+The three types of overlay techniques mentioned above have also been used in combination.
+% to make advantage of their properties.
+
+\emph{KelpFusion} \cite{MeulemansEtAl2013_kelpfusion} uses both lines and filled regions (Fig.~\ref{fig:hybrid_overlays}a) to bridge Bubble Sets (Sect.~\ref{sec:region_based}) and Kelp Diagrams (Sect.~\ref{sec:line_based}).
+It allows the graph connecting the points in a set to vary from a minimum spanning tree to the convex hull of a point set.
+Compared with BubbleSets, KelpFusion uses less ink and alleviate artifacts caused by empty overlapping regions.
+Compared with line-based overlays, KelpFusion simplifies the visual representation by filling regions of high point density.
+% It uses a hybrid representation that bridges Bubble Sets (Sect.~\ref{sec:region_based}) and Kelp Diagrams %, as depicted in %
+
+When the elements are represented as regions (such as countries on a map), hatching techniques can be used to indicate their set memberships as with colored glyphs.
+Fig.~\ref{fig:hybrid_overlays}b shows how African countries are colored according to their official languages.
+Each region is filled with colors that represent its set memberships.
+
+\emph{Kelp Diagrams} offers a variation that uses both lines an glyphs (Fig.~\ref{fig:hybrid_overlays}c).
+Color-coded glyphs are used to indicate element membership of multiple sets.
+Also, a hatching fill pattern is used for lines that represent multiple sets.
+
+
+\begin{figure*}[tp]
+  \centering
+  \includegraphics[width=\linewidth]{images/node_link.png}
+  \caption{\label{fig:node_link}
+           Node-link techniques:
+                    (a) Jigsaw \cite{stasko2008jigsaw},
+                    (b) anchored maps \cite{misue2007anchored},
+                    (c) PivotPaths \cite{dork2012pivotpaths}.
+                    }
+\end{figure*}
+
+
+Overlay techniques allow the analysis of how certain information and relations between the elements correlate with their set memberships.
+% This advantage comes at the cost of
+Alternatively, these correlations can be augmented with other visualizations that better emphasize the set information as in some of the following techniques.
+
+\subsection{Node-link Diagrams}
+\label{sec:nodelink}
+
+The membership relations between elements and sets can be modelled as edges of a bipartite graph
+whose nodes represent the elements and the sets.
+Several techniques have been proposed to visualize bipartite graphs.
+
+\newpage
+A simple layout for bipartite graphs places the elements and the sets in two lists parallel to each other.
+\emph{Jigsaw}~\cite{stasko2008jigsaw} uses this layout to show co-occurrence relations between different concepts in documents (Fig.~\ref{fig:node_link}a).
+The lists can be sorted, filtered, and colored according to multiple criteria to show desired elements and sets.
+Interaction allows exploring set relations on demand to avoid visual clutter and to navigate into long lists.
+Schulz et al.~\cite{schulz2008visual} demonstrated techniques to reduce the clutter caused by crossing edges in such layouts using color blending and a fisheye lens.
+Both systems allow exploring additional attributes of the elements using color or additional columns.
+
+\emph{Anchored maps} \cite{misue2007anchored} use a circular layout to visualize bipartite graphs.
+The technique places the set nodes around a circle.
+The element nodes are placed depending on their set memberships (Fig.~\ref{fig:node_link}b).
+Elements that belong exclusively to a set are placed as a bundle of nodes outside the circle, originating from the respective set node.
+Elements that are shared between multiple sets are placed within the circle, depending on their set memberships.
+
+\emph{PivotPaths} \cite{dork2012pivotpaths} is designed to support strolling in multi-faceted information spaces.
+Its node-link layout can also be used to depict element-set memberships, by placing the set nodes in the middle line (Fig.~\ref{fig:node_link}c).
+An element node is placed at a distance from the middle line that is proportional to its set membership degree.
+This allows to quickly identify elements that belong to multiple sets.
+The horizontal position of an element is computed as the mean of the set nodes it is connected to.
+The elements can be divided into two groups and placed at different sides of the middle line.
+Interaction allows inferring the set relations for a specific element or vice versa.
+
+\emph{Eye diagrams} \cite{} use a radial arrangement of the elements to fit more elements in one screen.
+The sets are placed as nodes on a vertical line in the center, and encircled by the elements.
+Edges connect the elements to the sets.
+As with PivotPaths, the elements can be split into two groups, each mapped to a half circle of different radius.
+The radial arrangement allows fitting more elements in one screen than in PivotPaths.
+However, it limits the number of set nodes, as they their placement line should fit within the circle.
+
+% Instead of showing element-set relations
+Node-link diagrams can also be used to show the similarity between the sets as links of varying thicknesses.
+\emph{OnSet} \cite{Sadana2014onset} (explained in the next section) allows showing links between the sets to encode their similarities (Fig.~\ref{fig:teaser}b).
+\emph{Circos} \cite{krzywinski2009circos} uses a circular layout for the nodes, and stripes to encode shared elements between them. % (Fig.~\ref{fig:node_link_agg}a).
+% The stripe thickness encodes the number of elements  that fall in both categories.
+
+\emph{Radial Sets} \cite{alsallakh2013radial} uses links to show overlaps of a specific degree between multiple sets (Fig.~\ref{fig:radial_sets}).
+To depict an overlap of degree 3 or higher, a meta-node of proportional size is created, with tapered links connecting this node to the respective sets.
+This resembles a hypergraph over the sets, drawn in edge standard \cite{makinen1990draw}. % to encode their overlap relations.
+
+As mentioned in Sect.~\ref{sec:scope} hypergraphs can also represent element-set relations, where each element defines a hyperedge over the sets it belongs to or vice versa.
+When drawn in edge standard, it is advantageous to color element nodes and set nodes differently as in affiliation networks \cite{borgatti2011analyzing}.
+
+
+% As mentioned in Sect.~\ref{sec:where_do_sets_come_from}, Formal Concept Analysis problems can be modelled by means of sets.
+Node-link diagrams are commonly used to facilitate reasoning about Formal Concept Analysis (Sect.~\ref{sec:where_do_sets_come_from}).
+Dedicated layout algorithms were devised to visualize concept lattices \cite{Cole2006Automated, Eklund2004Concept, Kuznetsov2007The} (Fig.~\ref{fig:FCA}).
+
+\begin{figure}[b!]
+  \centering
+  \includegraphics[width=\linewidth]{images/FCA.png}
+  \caption{\label{fig:FCA}
+           A concept lattice \cite{FCA_Wiki}.
+                    }
+\end{figure}
+
+
+%\begin{figure}[b!]
+  %\centering
+  %\includegraphics[width=\linewidth]{images/node_link_agg.png}
+  %\caption{\label{fig:node_link_agg}
+           %Using links to show
+                     %(a) binary overlaps \cite{krzywinski2009circos},
+           %(b) 3rd-degree overlaps \cite{alsallakh2013radial}.
+%                    }
+%\end{figure}
+
+
+\begin{figure*}[th!]
+  \centering
+  \includegraphics[width=\textwidth]{images/matrix_based.png}
+  \caption{\label{fig:matrix_based}
+          Matrix-based techniques:
+                    (a) ConSet \cite{kim2007visualizing},
+                    (b) OnSet \cite{Sadana2014onset},
+                    (c) UpSet \cite{lex2014upset},
+                    (c) frequency grid \cite{MicallefEtAl2012},
+                    (e) similarity matrix \cite{liu2005visualization},
+                    (f) the KMVQL layout \cite{huo2008kmvql}.
+                    }
+\end{figure*}
+
+\newpage
+\subsection{Matrix-based Techniques}
+\label{sec:matrix}
+
+Different methods have been proposed to visualize set memberships using matrices.
+These approaches take advantage of the clear and flexible metaphor of matrices.
+
+\emph{ConSet} \cite{kim2007visualizing} maps sets and elements to rows and columns respectively.
+The cells encode set memberships (Fig.~\ref{fig:matrix_based}a).
+The rows and columns are reorderable, as set and element names have no predefined order.
+The reordering can both simplify the matrix and reveal patterns in it, such as  clusters of elements that exhibit similar set memberships.
+Several interactions and visual aids are possible with the matrix representation, such as the aggregation of elements or sets.
+Aggregated elements can be indicated visually using darker cells or additional bars.
+To facilitate inferring to which sets an element belongs, the cells can be colored by unique set colors.
+Also, to facilitate inferring the elements that belong to a set, the respective cells can be connected with a line, instead of showing grid lines \cite{ziegler2002visualizing}.
+
+\emph{OnSet} \cite{Sadana2014onset} represents each set as a separate nearly-square matrix whose cells encode which elements belong to the set (Fig.~\ref{fig:matrix_based}b).
+Each element is represented by a unique cell position across all matrices.
+Hovering the mouse over an element highlights the respective pixels in the sets it belongs to.
+Drag and drop interactions allow aggregating multiple sets into one matrix using union or intersection (Fig.~\ref{fig:matrix_based}b).
+Links of varying thicknesses can be displayed between matrices to represent their element overlaps.
+% with link thickness proportional % to a similarity measure based on these overlaps.
+Hovering a link highlights shared elements between the respective sets (Fig.~\ref{fig:teaser}b).
+Representing sets as nearly-square matrices facilitates perceiving them as containers of the elements, following Gestalt's law of closure.
+Moreover, the matrix can be divided into tiles to represent a hierarchy over the elements.
+divided into tiles to represent a hierarchy over the elements
+divided into tiles to represent a hierarchy over the elements
+
+
+\emph{Frequency grids} \cite{MicallefEtAl2012} represent the elements as cells in a matrix, and places a glyph in each cell to encode the respective set memberships (Fig.~\ref{fig:matrix_based}d).
+They facilitate element counting.
+However, they are limited to only a few overlap combinations between a small number of sets.
+%However, they can show limitd overlap combinations between a small number of sets.
+
+The techniques mentioned so far encode which individual elements belong to each set, and which ones do not.
+A matrix can alternatively depict how the sets overlap with each other, by representing the sets both as rows and as columns:
+Each cell contains a similarity measure between the respective sets (Sect.~\ref{sec:datatype}), encoded in color as in a heatmap (Fig.~\ref{fig:matrix_based}e).
+Each pair of sets corresponds to two cells in the matrix.
+Therefore, the matrix can fit two symmetric measures, or one asymmetric measure.
+The matrix can be reordered to reveal clusters of sets that exhibit high overlap with each other.
+Overlaps of higher degree can be represented by further dividing the rows or columns.
+This however results in a complex matrix that contains several redundancies.
+% To explicitly represent the overlaps between triples of sets, each row (or column) can be divided recursively into multiple rows (or columns).
+% However, the resulting matrix becomes difficult to comprehend and contains several redundancies, as each 3-set group is mapped to six separate cells.
+
+\emph{KMVQL} \cite{huo2008kmvql} is a system to support formulating queries over a collection of items, by defining Boolean combinations of different search criteria.
+It encodes all possible $2^n$ combination of $n$ sets in a matrix (Fig.~\ref{fig:matrix_based}f).
+The user can click on a cell to include the elements it represents in the query result.
+Also, the cells can encode the frequency of elements in the respective set combination via color.
+
+\emph{UpSet} \cite{lex2014upset} represents sets as matrix columns, with rows representing different set combinations.
+Dots are placed in cells that correspond to the sets involved in each combination, and are connected with a straight line (Fig.~\ref{fig:matrix_based}c).
+The matrix can also represent aggregates of set combinations as expandable rows whose dots encode the sets involved in each aggregate.
+UpSet also uses bars to represent the elements in each combination along with other information about them, as explained in the next section.
+
+
+% Compressed Adjacency Matrices: Untangling Gene Regulatory Networks \cite{dinkla2012compressed}
+
+\begin{figure*}[ht!]
+  \centering
+  \includegraphics[width=\linewidth]{images/agg_based_techniques.png}
+  \caption{\label{fig:freq_based_techniques}
+            Aggregation-based techniques:
+                    (a) an interactive bar chart \cite{alsallakh2013radial},
+                    (b) Set'o'gram \cite{Freiler2008Set},
+                    (c) Double-Decker plot \cite{hofmann2000visualizing},
+                    (d) a binary tree along with quantitative values  \cite{kosara2007autism},
+                    (e) Mosaic displays \cite{hofmann2000exploring},
+                    (f) Parallel Sets \cite{kosara2006parallel},
+                    (g) Radial Sets \cite{alsallakh2013radial},
+                    (h) MetaCrystal \cite{spoerri2004metacrystal}
+                    }
+\end{figure*}
+
+\subsection{Aggregation-based Techniques}
+\label{sec:agg}
+
+When the number of elements is large, it becomes less feasible to depict and investigate how single elements belong to the sets.
+Following Shneiderman's visual information-seeking mantra \cite{shneiderman1996eyes}, many techniques provide an overview of such data first, and allow exploring details about certain elements on demand.
+These techniques employ frequency representations of set-typed data to show the number of elements in different sets and subsets.
+They aggregate multiple data elements into a single visual element that encodes this frequency.
+
+\emph{Interactive bar charts} have been used to depict the sizes of the sets and reveal the set overlaps as the bars are brushed \cite{alsallakh2013radial}.
+% It was employed by Alsallakh et al.  to provide a summary overview of set-typed data, as part of an exploration environment that encompasses more detailed views of the data.
+Unlike traditional bar charts, an element can be aggregated in multiple bars, as it might belong to multiple sets.
+Clicking on one bar selects the elements in the respective set, and highlights the fraction that these elements represent in the other bars, revealing how certain pairs of sets overlap (Fig.\ref{fig:freq_based_techniques}a).
+The selection can be refined further using set operations between new selection and previously selected elements, to investigate the overlaps between multiple sets.
+However, this chart does not readily reveal how the sets overlap and can only depict certain overlaps on demand.
+
+\emph{Set'o'gram} \cite{Freiler2008Set} is an extension to the interactive bar chart, designed for set-typed data.
+Instead of directly visualizing the overlaps between the sets, a set'o'gram indicates how many elements in each set are shared with how many sets.
+For this purpose, it divides the bars representing the sets into sections that correspond to elements of different set membership degrees (Fig.\ref{fig:freq_based_techniques}b). %stacked on top of each other (Fig.~\ref{fig:setogram}).
+% Each bar represents a set of proportional size, and is divided into sections stacked on top of each other (Fig.~\ref{fig:setogram}).
+Starting from the bottom, the $i^{th}$ section in a bar represents elements in the respective set that are shared with $i - 1$ other sets.
+The height  of a section is proportional to the number of elements aggregated in it.
+Starting from the top, the sections are assigned increasing widths and are shaded along their diagonals to distinguish between successive sections and to reveal empty sections that have zero height.
+The sections can be selected and highlighted individually to reveal the sets involved in them. % of the degree of overlaps.
+% The sections are shaded along their diagonals for the same purpose.
+%Like in the interactive bar chart, the overlap between the sets can be revealed via interaction. Set'o'gram allows finer selection by means of individual sections.
+
+The \emph{Double-Decker plot} \cite{hofmann2000visualizing} shows how multiple Boolean variables correlate.
+% adapts mosaic displays to
+% It depicts how multiple sets overlap by partitioning the space according to the set memberships in the horizontal dimension only, showing how many elements belong to each possible combination of set memberships (Fig.\ref{fig:freq_based_techniques}d).
+The upper part of this plot encodes the number of elements in each possible set combination by means of equal-height histograms (Fig.\ref{fig:freq_based_techniques}c).
+This allows easy comparison between selected portions in different overlaps, as the respective bars in the upper part are of the same height.
+The histogram bars are arranged according to a hierarchy of set memberships which is depicted in the lower part by means of multiple rows.
+% additional display which shows each set in a separate row using multiple tiles to represent its element.
+Starting from the bottom, row $i$ is divided into $2^i$ parts that correspond to the different membership combinations of the sets ${S_1 .. S_i}$.
+This gives an overview of how the sets overlap, however, from the perspective of the set that defines the first partitioning level.
+\emph{Linear diagrams} \cite{ChapmanSRMB14, gottfried2014set} allow for more generic divisions of the rows (Fig.~\ref{fig:freq_based_techniques}d).
+The \emph{set co-occurrence view} \cite{wittenburg2010setting} uses a similar plot to support set-typed data in the bargrams interface.
+This interface uses additional rows to show the possible values of other attributes and the frequencies of these values.
+Kosara \cite{kosara2007autism} proposed a redesign of Venn diagrams composed of two parts, as with Double-Decker plot.
+The lower part consists of a binary tree whose branches represent different set combinations Fig.~\ref{fig:freq_based_techniques}e).
+The upper part is bar chart that encodes quantitative information about the respective overlaps.
+
+\emph{Mosaic displays} \cite{hofmann2000exploring} is a space-filling technique % similar to tree maps \cite{johnson1991tree}.
+that recursively partitions the space along the categories of multiple categorical variables (Fig.\ref{fig:freq_based_techniques}f).
+To visualize set-typed data, set memberships can be treated as binary categorical variables \cite{Freiler2008Set}.
+However, using both horizontal and vertical subdivisions makes it hard to relate display tiles that belong to the same set.
+
+% Interactive selection allows correlating the set memberships of the elements with their attributes.
+
+\emph{Parallel Sets} \cite{kosara2006parallel} can be applied to visualize set-typed data by treating set memberships as binary categorical variables.
+Each set is represented on a separate horizontal axis using two boxes of proportional size to represent both the elements that belong to the set and the remaining elements
+(Fig.\ref{fig:freq_based_techniques}g).
+Up to four stripes connect the boxes between the two topmost axes to represent elements that fall in the respective set membership combinations.
+In the standard mode, the stripes are split further as they pass through the remaining axes, representing all possible set combinations.
+% The horizontal width of a box or of a stripe encodes the number of elements in it.
+Unlike mosaic displays, Parallel Sets represent the elements of a set in one box only instead of several tiles.
+However, splitting the stripes increases them by a factor of 2, as with the mosaic tiles.
+Moreover, the stripes overlap, causing clutter with more than four sets.
+A bundled mode of the stripes reduces this clutter but causes stripe discontinuity.
+% This can be reduced in the bundled mode.
+
+% Circos \cite{krzywinski2009circos} is a system that visualizes relations between multiple categories in a dataset by means of a chord diagram.
+% It depicts the categories by dividing a circle into arcs of proportional sizes connected by chords that represent the relations between the categories.
+% To visualize set overlaps, the sets can be treated as categories and depicted as arcs of proportional sizes.
+% A chord represents the overlap between a pair of sets with thickness encoding the overlap size.
+% Elements exclusive to a set can be identified easily, as no
+
+%The sets are represented as rows, while the elements are represented over the horizontal dimension and are sorted by their membership to the sets starting from the topmost set downwards.
+%In each row, bars are drawn to indicate the elements that belong to the corresponding set according to the above sorting (figure~~\ref{fig:relatedwork}d), in a fashion similar to a heat map.
+%This means that row $i$ is divided into $2^i$ parts corresponding to the different membership combinations of the sets ${S_1 .. S_i}$.
+%Elements that belong to the overlap between the two bottommost sets can be potentially scattered across different bars.
+%Nevertheless, the rows can be reodrered interactively to address such cases. %, and enable analyzing certain overlaps in details by placing the respective sets at the top.
+
+
+%Different interaction can help in analyzing certain overlaps.
+%For example, the ordering of the rows can be adjusted to bring certain sets to the top.
+%This makes it easier to inspect the overlap between these sets.
+%Also, the elements can be selected interactively according to their set memberships, in a fashion similar to the interactive bar chart described above.
+% The set co-occurrence view is integrated in the bargrams interface \cite{wittenburg2001parallel} which uses additional rows to shows the possible values of other attributes and the frequencies of these values.
+% This allows correlating the set memberhips of the elements with their attributes by means of interactive selection.
+% Thinner and darker bars indicate which elements in the different rows belong to the selection.
+% The bottommost section of a bar denotes the elements that have the lowest degree in the respective set.
+
+
+
+\emph{Radial Sets} \cite{alsallakh2013radial} provide a more detailed overview of set-typed data than the above-mentioned techniques.
+The sets are depicted as non-overlapping regions with a radial arrangement.
+The elements are represented as histogram bars inside these regions, grouped by their degrees (Fig.~\ref{fig:radial_sets}a).
+% These bars provide the same information as the sections in a set'o'gram and address some issues with the sections such as consistent locations across different sets and revealing empty sections.
+Overlaps between pairs of sets are represented as links of proportional thicknesses. %(Sect.~\ref{sec:datatype})
+Overlaps between triples of sets are represented by hyperedges between the respective regions (Fig.~\ref{fig:radial_sets}b).
+% , according to the user's choice.
+% Besides viewing overlaps between pairs of the sets, the metaphor also allows viewing overlaps between multiple sets, as hyperedges between the respective regions.
+% A hyperedge is depicted as a node connected to the respective regions using tapered links.
+% To avoid visual clutter, these links can be shown on demand by hovering over a node  with the mouse.
+% This results in a bubble chart of the overlaps which enables size comparison, but hinders the ability to visually infer which sets are involved in which overlap.
+% Radial Sets use spatial variables only to visually encode the sets, the elements, and the overlaps.
+A variety of interactions allow selecting elements based on their set memberships and attributes.
+Such queries can be defined iteratively, by combining multiple selections using set operations.
+Radial Sets use color to indicate selected elements.
+When no elements are selected, color can be used to encode aggregated attribute values of the elements aggregated in the histogram bars.
+This enables correlating element attributes with their set memberships.
+
+\emph{InfoCrystal} \cite{spoerri1993visual} uses glyphs to represent all possible set overlaps.
+The set labels are placed on a circle and act as magnets on the glyphs to determine their placement (Fig.~\ref{fig:freq_based_techniques}h).
+A follow-up work \cite{spoerri2004metacrystal} demonstrates the use of glyph sizes to encode overlap sizes, and the use of color to encode the sets involved in the overlap.
+
+% Four of the above-mentioned methods represent all possible set overlaps:
+Though the Double Decker plot, Mosaic Displays, Parallel Sets, and InfoCrystal, represent all possible set overlaps, they are very limited in scalability and visual accuracy.
+The \emph{overlap analysis view} \cite{alsallakh2013radial} provided in the Radial Sets interface allows exploring all possible set overlaps using tabular lists.
+To allow for meaningful comparison, each list contains overlaps between a specific number of sets.
+The lists provide information about the overlaps such as size and disproportionality either graphically or in text.
+
+ \begin{figure}[t!]
+  \centering
+  \includegraphics[width=\linewidth]{images/radialsets.png}
+  \caption{\label{fig:radial_sets} Radial Sets \cite{alsallakh2013radial} showing a breakdown of set elements by their degrees using grey histograms.
+                    The links show overlaps between pairs (a) or  triples (b) of sets.
+%                    (a) An Euler diagram (adapted from \cite{WyattEtAl2009}),
+%                    (b) equivalent Radial Sets \cite{alsallakh2013radial} with illustrative icons.
+%                    The histograms in grey show a breakdown of set elements by their degrees.
+%                    The arcs show overlaps between pairs of sets.
+%                     The icons and colors are for illustration only.
+                    }
+ \end{figure}
+
+
+
+
+\emph{UpSet} \cite{lex2014upset} combines several ideas from the above-mentioned techniques to enable powerful analysis of set-typed data.
+The main objects of analysis are aggregates of elements represented as bars of a bar chart (Fig.~\ref{fig:upset}).
+As explain in Sect.~\ref{sec:matrix}, the sets involved in each aggregate are encoded via a row in matrix.
+Moreover, various information can be depicted about the aggregates in additional columns  (Fig.~\ref{fig:teaser}c).
+One example is a bar chart which shows the disproportionality represented by each aggregate, computed by comparing actual and expected sizes of the respective set intersections.
+Another example are box plots that show a summary of attribute distributions in the elements that belong to each aggregate.
+This enables analyzing element-set memberships in relation to element attributes.
+
+The tabular layout of Upset along with the matrix representation to relate the aggregates to the sets allow for flexible sorting of the aggregates by size or disproportionality, or by attribute medians.
+This is not possible with the stripes in parallel sets, the bars in double decker plots, or the tiles in mosaic displays, as the layout of these visualizations dictates the positions of the visual elements, with very limited sorting possibilities.
+Also, the use of simple bars is more effective for comparing their sizes than the tiles in mosaic displays or the circles in MetaCrystal.
+
+\begin{figure}[b!]
+  \centering
+  \includegraphics[width=\linewidth]{images/upset.png}
+  \caption{\label{fig:upset}
+           Example grouping options in UpSet \cite{lex2014upset}:
+                     (a) grouping by element degree,
+           (b) grouping by sets.
+                    }
+\end{figure}
+
+A key feature of UpSet is the possibility to group the bars according to different criteria.
+Fig.~\ref{fig:upset}a shows a grouping of the bars according to element degree, so that equal number of sets is involved in each bar within a group.
+Fig.~\ref{fig:upset}b places groups of bars that belong to the same set.
+However, this second grouping results in duplicates, as two bars are created for an aggregate whose elements belong to two specific sets, and are placed in two groups that correspond to these sets.
+Various interactions were demonstrated to select elements based on their set memberships and attribute values.
+Set-based queries can be defined by adding a new row to the matrix and selecting set membership criteria using matrix dots.
+This enables analyzing queries results using bars and additional columns in the same fashion as with other sets.
+
+
+In some cases, there is a need to provide a compact overview of set sizes, as part of an information-dense interface.
+A common mistake is to show the set sizes via a pie chart, as the chart categories are not mutually exclusive and do not sum up as parts of a complete whole (Fig.~\ref{fig:pie_and_fan}a).
+Fan diagrams (Sect.~\ref{sec:euler_like}) address this issue by explicitly visualizing the overlaps between three categories (Fig.~\ref{fig:pie_and_fan}b).
+To handle more sets, stacked bars with special motifs indicating possible overlaps \cite{wittenburg2012visualizing} were proposed (Fig.~\ref{fig:freq_stacked_bar}a).
+Showing the total number of elements helps quantifying the degree of overlap \cite{basole2013understanding} (Fig.~\ref{fig:freq_stacked_bar}b).
+% Alternatively, can   (Fig.~\ref{fig:freq_stacked_bar}b).
+%a special motif for the stacked bar by depicting its parts using parallelograms. This aims
+% This aims to emphasize that these parts might overlap and that their sum is hence not necessarily equal to the number of elements.
+%This reduces possible confusion when displaying this stacked bar in parallel with the standard stacked bars in the bargrams interface \cite{wittenburg2001parallel} using a different scaling to span the same width as the other bars (Fig.~\ref{fig:stacked_motifs}).
+%Basole et al. proposed an alternative solution to indicate the overlap between the stacked parts, by depicting a thinner bar in parallel to indicate the number of the elements.
+%This allows roughly estimating how strongly the sets overlaps by comparing the length of the two bars.
+\begin{figure}[b!]
+  \centering
+  \includegraphics[width=\linewidth]{images/pie_and_fan.png}
+  \caption{\label{fig:pie_and_fan}
+           (a) a pie chart of set sizes distorts their relation to the whole.
+                     (b) a Fan diagram \cite{kim2007visualizing} showing set overlaps.
+                    }
+\end{figure}
+\begin{figure}[b!]
+  \centering
+  \includegraphics[width=\linewidth]{images/freq_stacked_bar.png}
+  \caption{\label{fig:freq_stacked_bar}
+           Equal bar histograms to show set sizes:
+                     (a) parallel bars as special motives \cite{wittenburg2012visualizing},
+           (b) an additional bar to indicate the total number of elements \cite{basole2013understanding}.
+                    }
+\end{figure}
+
+Except for mosaic displays (Fig.\ref{fig:freq_based_techniques}c), the techniques mentioned above might represent one element in multiple visual elements, depending on the sets it belongs to.
+Some visualizations indicate this element redundancy explicitly, as with the links in Radial Sets and the collocated bars in Double Decker plots.
+Interaction is needed to investigate which elements are present in multiple sets, and to obtain detailed information about selected elements.
+
+%While some visualizations indicate this element redundancy as with the links in Radial Sets, interaction is needed to investigate
+% \begin{figure}[b]
+%  \centering
+%  \includegraphics[width=\linewidth]{images/freq_stacked_bar.png}
+%  \caption{\label{fig:freq_stacked_bar}
+%           Here is a sample figure.
+%           Here is a sample figure.
+%           Here is a sample figure.}
+% \end{figure}
+
+\newpage
+
+\subsection{Scatterplot-based Techniques}
+\label{sec:computational}
+
+One way to analyze similarity values between sets in detail is to use a 2D scatter plot that represents the sets as points in the plane.
+Though such a plot does not emphasize sets as containers of elements, it offers a clear layout to analyze the relations between the sets and identify clusters of similar sets. % that have many elements in common.
+However, not all set similarity measures define a distance function, which limits the applicability of 2D projections
+(e.g. close points could be produced for disjoint sets).
+
+The \emph{scatter view} \cite{liu2005visualization} visualizes the similarity between a certain set, and the rest of the sets.
+It depicts two asymmetric similarity measures against each other to find which set is closer to the reference set both in overlap intensity and completeness (Fig.~\ref{fig:computational}a).
+To gain an overview of the similarities between all pairs of sets, the authors proposed a \emph{cluster view} that projects the sets on the plane similar to the way  multi-dimensional scaling operates (Fig.~\ref{fig:computational}b).
+
+\emph{Correspondence analysis (CA)} \cite{greenacre1984theory} has been used to visualize 2-mode social networks by treating them as binary contingency tables \cite{borgatti2011analyzing}.
+% Such tables store the relation between two groups of entities as a binary matrix (Fig.~\ref{fig:set_typed_data}d).
+Fig.~\ref{fig:computational}c depicts the CA plot for the southern women dataset (Fig.~\ref{fig:set_typed_data}c).
+The plot contains points both for sets and elements.
+Close element points indicate similar set memberships. Close set points indicate high overlap.
+Edges can be optionally overlaid between the sets and elements.
+
+
+\begin{figure}[b!]
+  \centering
+  \includegraphics[width=0.98\linewidth]{images/computational.png}
+  \caption{\label{fig:computational}
+           Scatterplot-based techniques:
+                     (a, b) a scatter view and a cluster view \cite{liu2005visualization},
+           (c) Correspondence Analysis view of the southern women dataset \cite{borgatti2011analyzing}.
+                    }
+\end{figure}
+
+
+
+\section{Comparison and Findings}
+\label{sec:findings}
+
+To provide guidance on applying the surveyed set visualization techniques to a given problem, we compare the techniques according to the following three aspects.
+
+\begin{table*}[bp]
+  \centering
+  \caption{Selected strengths and weaknesses of the visual categories (Sect.~\ref{sec:survey}). Euler diagram variants are not listed separately.}
+    \label{tab:strength_and_weaknesses}   
+    {\small
+\hfill{}
+\captionsetup{singlelinecheck=off,labelfont=bf,labelsep=space}
+\renewcommand{\arraystretch}{1.7}
+\setlength{\tabcolsep}{4pt}
+
+\begin{tabular}{l c c}
+\textbf{Category} &
+\textbf{Strengths} &
+\textbf{Weaknesses} \\
+\hline \hline
+
+\parbox[t]{18mm}{\textbf{Euler-based diagrams}} &
+
+\parbox[t]{67mm}{
+Intuitive when well-matched (little training is required). \\
+Represent all standard set relations compactly.} &
+
+\parbox[t]{67mm}{
+Limited to few sets due to clutter and drawability issues. \\
+Desired properties not always possible (e.g. convexity).} \\[3ex]
+
+\hline
+\textbf{Overlays} &
+\parbox[t]{67mm}{
+Emphasize element and set distributions according to \\
+other data features (e.g. map locations).} &
+\parbox[t]{67mm}{
+Often limited in the number of elements and sets. \\
+Undesired layout artifacts (overlaps, crossing, shapes, etc.).} \\[3ex]
+
+\hline
+\parbox[t]{18mm}{\textbf{Node-link \\ diagrams}} &
+\parbox[t]{67mm}{
+Visually emphasize the elements as individual objects. \\
+Show clusters of elements having similar set memberships.} &
+\parbox[t]{67mm}{
+Limited scalability due to edge crossings. \\
+No representation of set relations in element-set diagrams.} \\[3ex]
+
+\hline
+\parbox[t]{18mm}{\textbf{Matrix-based techniques}} &
+\parbox[t]{67mm}{
+Fairly scalable both in the number of elements and sets. \\
+Do not suffer from edge crossings or topological constraints.} &
+\parbox[t]{67mm}{
+Limited in the set relations they can represent. \\
+Revealed membership patterns are sensitive to ordering.} \\[3ex]
+
+\hline
+\parbox[t]{18mm}{\textbf{Aggregation- based}} &
+\parbox[t]{67mm}{
+Highly scalable in the number of elements. Some techniques \\
+can show how attributes correlate with set membership.} &
+\parbox[t]{67mm}{
+Usually, do not emphasize sets and elements as objects. \\
+Limited in the set relations they can represent.} \\[3ex]
+
+\hline
+\textbf{Scatter plots} &
+\parbox[t]{67mm}{
+Show clusters of sets according to mutual similarity. \\
+Clutter free and scalable when showing sets only.} &
+\parbox[t]{67mm}{
+Do not represent standard set relations. \\
+Dots are often perceived as elements not as sets.} \\[3ex]
+\hline
+
+\end{tabular}}
+\hfill{}
+\end{table*}
+
+\subsection{Comparison by what is represented}
+\label{sec:comparison_by_what}
+Set-typed data can encompass information about sets and their relations, elements and their set memberships, and other element attributes.
+The surveyed techniques differ by the type of information they represent:
+\begin{itemize}
+\item \textbf{Representing set information only:}
+These techniques provide no information about the individual elements.
+This includes simple Euler diagrams that represent set relations, as well as matrices, node-link diagrams, and scatter plots that represent set similarities.
+
+\item \textbf{Representing individual elements explicitly}:
+Examples are Euler diagrams with glyphs, overlays,  element-set node-link diagrams, membership matrices and frequency grids.
+Further element attributes can often be represented using additional visual features or additional columns.
+
+\item \textbf{Representing element aggregates}:
+As discussed in Sect.~\ref{sec:agg}, such techniques depict groups of elements, possibly along with relations between these groups.
+Some techniques (e.g. Double-Decker, UpSet, and Radial Sets) can depict aggregated attribute values for group elements.
+
+\end{itemize}
+The techniques vary also in the set relations they represent explicitly.
+Euler diagrams show inclusion, exclusion, and intersection relations.
+Scatterplot-based and some aggregation-based techniques (e.g. Set'o'grams) do not represent these relations explicitly.
+Other aggregation-based, node-link, and matrix-based techniques represent certain set relations only (usually set intersections).
+
+Finally, certain techniques show multiple instances of the same element according to the sets it belong to.
+Example for this are the DupED version of untangled Euler diagrams (Fig.~\ref{fig:euler_like}d) and parallel tag clouds (Fig.~\ref{fig:line_based}b).
+Also, OnSet and membership matrices fill multiple cells for the same element (Fig.~\ref{fig:matrix_based}a, b).
+Visual duplicates allow set-dependent attributes (Sect.~\ref{sec:datarep}) to be shown, e.g. different tag frequencies or ranks in multiple clouds.
+
+%Some techniques are concerned with the sets only, without providing any information about the individual elements.
+%This includes simple Euler diagrams that represent set relations, as well as matrices, node-link diagrams, and scatter plots that represent set similarities.
+
+%Other techniques represent individual elements explicitly, such as Euler diagrams with glyphs, overlays over existing elements,  element-set node-link diagrams, %membership matrices and frequency grids.
+%These techniques can represent further attributes of the elements using additional visual features or additional columns.
+
+%Aggregation-base techniques represent groups of elements, possibly with additional relations between these groups.
+
+%Some techniques allow representing further attributes of individual elements.
+
+
+
+\subsection{Comparison of general strengths and weaknesses}
+
+Each of the techniques categories listed in Sect.~\ref{sec:datatype} has advantages and limitations associated with the visual representation it employs.
+Table~\ref{tab:strength_and_weaknesses} summarizes the major ones that generally apply to the techniques in the respective category.
+However, it should be noted that individual techniques have their own advantages and limitations. For more details refer to Sect.~\ref{sec:survey} and to the respective articles.
+
+
+
+%\caption{Table Name}
+
+\subsection{Comparison by supported tasks and scalability}
+
+The surveyed techniques differ in the tasks (Sect.~\ref{sec:tasks}) they support.
+Table~\ref{tab:tech_x_task} provides an overview of the tasks supported by a representative subset of techniques from all surveyed categories.
+The task support was either indicated by the authors or judged by us based on published work.
+We indicate whether the task is supported fully, partially or through interaction only.
+Partial support means that the technique is not always effective for the respective task, or support the tasks to a limited extent (e.g. with few sets only).
+% cases where a task is only supported in a limited way or if it requires interaction to retrieve or reveal the desired information from the respective visualization.
+Additionally we give a rough estimate of the scalability of the techniques, both in the number of sets and in the number of elements, when applicable.
+Actual scalability limits depend on the complexity of the specific dataset, such as overlap strength and skewness in the set sizes.
+
+\begin{landscape}
+\begin{table}[ht]
+  \centering
+  \caption{Comparison of selected techniques from Sect.~\ref{sec:survey} by the tasks they support (Sect.~\ref{sec:tasks}).
+                     Selected Euler diagram variants are included in the first group.}
+    \label{tab:tech_x_task}
+   
+    {\small
+\hfill{}
+\captionsetup{singlelinecheck=off,labelfont=bf,labelsep=space}
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{3pt}
+
+\begin{tabular}{|l l|c c c c c c c|c c c c c c c c c c c c c c| c c c c c|l l|}
+\hline
+\multicolumn{2}{|c|}{Technique} &
+\multicolumn{7}{c|}{Element-related Tasks} &
+\multicolumn{14}{c|}{Set-related Tasks} &
+\multicolumn{5}{c|}{Attribute-related Tasks} &
+\multicolumn{2}{c|}{Scalability}
+%\multicolumn{2}{|c|}{Scatter}
+\\[1ex]
+&
+&
+A1 &
+A2 &
+A3 &
+A4 &
+A5 &
+A6 &
+A7 &
+B1 &
+B2 &
+B3 &
+B4 &
+B5 &
+B6 &
+B7 &
+B8 &
+B9 &
+B10 &
+B11 &
+B12 &
+B13 &
+B14 &
+C1 &
+C2 &
+C3 &
+C4 &
+C5 &
+in \# of sets &
+in \# of elements \\
+
+\hline
+
+\parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Euler-based}}} &
+Euler diagrams&
+$\bullet$ & %A1
+$\bullet$ & %A2
+$\bullet$  & %A3
+$\circ$  & %A4
+& %A5
+& %A6
+$\circ$ & %A7
+$\circ$  & %B1
+$\bullet$  & %B2
+$\bullet$  & %B3
+$\bullet$  & %B4
+$\bullet$  & %B5
+$\circ$ & %B6
+$\bullet$  & %B7
+$\bullet$  & %B8
+$\circ$  & %B9
+$\bullet$  & %B10
+$\circ$  & %B11
+$\circ$  & %B12
+n/a & %B13
+$\circ$  & %B14
+$\circ$ & %C1
+$\circ$ & %C2
+$\circ$ & %C3
+& %C4
+& %C5
+about 10 &
+hundreds / $\infty$ \\
+
+&
+ComED&
+$\bullet$ & %A1
+$\bullet$ & %A2
+$\bullet$  & %A3
+$\circ$  & %A4
+& %A5
+& %A6
+$\bullet$ & %A7
+$\circ$  & %B1
+$\bullet$  & %B2
+$\circ$  & %B3
+$\circ$  & %B4
+$\circ$  & %B5
+$\bullet$ & %B6
+$\circ$  & %B7
+$\circ$  & %B8
+& %B9
+& %B10
+$\circ$  & %B11
+$\circ$  & %B12
+$\bullet$ & %B13
+& %B14
+& %C1
+& %C2
+& %C3
+& %C4
+& %C5
+10 to 20 &
+hundreds \\
+
+&
+DupED&
+$\bullet$ & %A1
+$\circ$ & %A2
+$\circ$  & %A3
+$\circ$  & %A4
+& %A5
+& %A6
+$\bullet$ & %A7
+$\bullet$  & %B1
+$\bullet$  & %B2
+$\bullet$  & %B3
+$\bullet$  & %B4
+$\circ$  & %B5
+& %B6
+& %B7
+$\circ$  & %B8
+& %B9
+& %B10
+$\circ$  & %B11
+$\circ$  & %B12
+$\bullet$ & %B13
+& %B14
+& %C1
+& %C2
+& %C3
+& %C4
+& %C5
+about 10 &
+tens \\
+
+\hline
+\parbox[t]{2mm}{\multirow{5}{*}{\rotatebox[origin=c]{90}{Overlays}}} &
+BubbleSets&
+$\bullet$ & %A1
+$\bullet$ & %A2
+$\circ$ & %A3 
+$\circ$ & %A4
+& %A5
+& %A6
+$\bullet$ & %A7
+$\circ$ & %B1
+$\circ$ & %B2
+$\circ$ & %B3
+$\circ$ & %B4
+$\circ$ & %B5
+$\circ$ & %B6
+& %B7
+$\circ$ & %B8
+$\circ$ & %B9
+& %B10
+& %B11
+$\circ$ & %B12
+$\circ$ & %B13
+& %B14
+$\circ$ & %C1
+$\circ$ & %C2
+& %C3
+& %C4
+& %C5
+about 10 &
+tens \\
+
+&
+LineSets&
+$\bullet$ & %A1
+$\bullet$ & %A2
+$\circ$ & %A3 
+$\circ$ & %A4
+& %A5
+& %A6
+$\bullet$ & %A7
+$\circ$ & %B1
+& %B2
+& %B3
+& %B4
+& %B5
+$\circ$ & %B6
+& %B7
+$\circ$ & %B8
+& %B9
+& %B10
+& %B11
+$\circ$ & %B12
+$\circ$ & %B13
+& %B14
+$\circ$ & %C1
+& %C2
+& %C3
+& %C4
+& %C5
+10 to 100 &
+hundreds \\
+
+% &
+% Kelp diagrams&
+% $\bullet$ & %A1
+% $\bullet$ & %A2
+% $\circ$ & %A3 
+% $\circ$ & %A4
+% & %A5
+% & %A6
+% $\bullet$ & %A7
+% $\circ$ & %B1
+% $\circ$ & %B2
+% $\circ$ & %B3
+% $\circ$ & %B4
+% $\circ$ & %B5
+% $\circ$ & %B6
+% $\circ$ & %B7
+% $\circ$ & %B8
+% $\circ$ & %B9
+% & %B10
+% $\circ$ & %B11
+% $\circ$ & %B12
+% $\circ$ & %B13
+% & %B14
+% $\circ$ & %C1
+% $\circ$ & %C2
+% & %C3
+% & %C4
+% & %C5
+% about 10 &
+% tens \\
+&
+Colored glyphs &
+$\circ$ & %A1
+$\bullet$ & %A2
+$\circ$ & %A3
+$\circ$ & %A4
+& %A5
+& %A6
+& %A7
+$\circ$ & %B1
+& %B2
+& %B3
+& %B4
+$\circ$ & %B5
+$\circ$ & %B6
+& %B7
+$\circ$ & %B8
+& %B9
+& %B10
+& %B11
+$\circ$ & %B12
+$\circ$ & %B13
+& %B14
+& %C1
+& %C2
+& %C3
+$\circ$ & %C4
+& %C5
+10 to 20 &
+hundreds \\
+&
+Icon lists &
+& %A1
+$\bullet$ & %A2
+& %A3 
+& %A4
+& %A5
+& %A6
+$\bullet$ & %A7
+& %B1
+& %B2
+& %B3
+& %B4
+& %B5
+& %B6
+& %B7
+& %B8
+& %B9
+& %B10
+& %B11
+$\circ$ & %B12
+& %B13
+& %B14
+$\bullet$ & %C1
+& %C2
+& %C3
+$\circ$ & %C4
+$\circ$ & %C5
+tens &
+large list \\
+
+\hline
+\parbox[t]{2mm}{\multirow{3}{*}{\rotatebox[origin=c]{90}{Node-link}}} &
+Linked lists&
+\ComputerMouse & %A1
+\ComputerMouse & %A2  
+\ComputerMouse & %A3 
+\ComputerMouse & %A4 
+\ComputerMouse & %A5 
+\ComputerMouse & %A6 
+\ComputerMouse & %A7
+%\includegraphics[scale=0.5]{images/mouse.png} & %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+& %B4
+& %B5
+& %B6
+& %B7
+& %B8
+& %B9
+& %B10
+& %B11
+& %B12
+$\circ$ & %B13
+& %B14
+$\bullet$ & %C1
+$\circ$ & %C2
+$\circ$ & %C3
+\ComputerMouse & %C4
+\ComputerMouse & %C5
+
+hundreds  &
+hundreds \\
+&
+Anchored maps&
+$\circ$ & %A1
+$\circ$ & %A2
+& %A3
+$\circ$ & %A4
+& %A5
+$\circ$ & %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+& %B4
+$\circ$ & %B5
+& %B6
+$\circ$ & %B7
+$\circ$ & %B8
+& %B9
+$\circ$ & %B10
+& %B11
+$\bullet$ & %B12
+\ComputerMouse & %B13
+& %B14
+\ComputerMouse & %C1
+& %C2
+& %C3
+& %C4
+& %C5
+20 to 50 &
+hundreds \\
+&
+PivotPaths&
+\ComputerMouse & %A1
+\ComputerMouse & %A2
+& %A3
+\ComputerMouse & %A4
+& %A5
+\ComputerMouse & %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+& %B4
+& %B5
+$\circ$ & %B6
+& %B7
+& %B8
+& %B9
+& %B10
+& %B11
+\ComputerMouse & %B12
+$\bullet$ & %B13
+& %B14
+\ComputerMouse & %C1
+& %C2
+& %C3
+& %C4
+& %C5
+50 to 100 &
+hundreds \\
+
+
+\hline
+\parbox[t]{2mm}{\multirow{5}{*}{\rotatebox[origin=c]{90}{Matrix}}} &
+ConSet&
+$\bullet$ & %A1
+$\bullet$ & %A2
+$\circ$ & %A3
+& %A4
+\ComputerMouse & %A5
+\ComputerMouse & %A6
+\ComputerMouse & %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+\ComputerMouse & %B4
+\ComputerMouse & %B5
+$\circ$ & %B6
+& %B7
+& %B8
+& %B9
+& %B10
+& %B11
+& %B12
+\ComputerMouse & %B13
+\ComputerMouse & %B14
+$\bullet$ & %C1
+& %C2
+& %C3
+& %C4
+& %C5
+about 100 &
+about 100 \\
+&
+OnSet &
+$\bullet$ & %A1
+\ComputerMouse & %A2
+\ComputerMouse & %A3
+& %A4
+& %A5
+& %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+\ComputerMouse & %B4
+$\bullet$ & %B5
+& $\circ$
+& $\circ$
+& $\circ$
+& $\bullet$
+& $\circ$
+& $\bullet$
+& $\circ$ %B12
+& $\bullet$ %B13
+\ComputerMouse & %B14
+\ComputerMouse & %C1
+& %C2
+& %C3
+& %C4
+& %C5
+tens &
+hundreds \\
+
+&
+Frequency grids&
+$\bullet$ & %A1
+$\bullet$ & %A2
+$\circ$ & %A3
+$\circ$ & %A4
+$\circ$ & %A5
+$\circ$ & %A6
+$\circ$ & %A7
+$\circ$ & %B1
+$\bullet$ & %B2
+& %B3
+& %B6
+$\bullet$  & %B4
+$\bullet$  & %B5
+$\bullet$ & %B7
+$\bullet$ & %B8
+$\circ$ & %B9
+$\bullet$ & %B10
+& %B11
+$\bullet$ & %B12
+$\bullet$ & %B13
+& %B14
+\ComputerMouse & %C1
+& %C2
+& %C3
+& %C4
+& %C5
+3 to 5 &
+hundreds \\
+&
+Overlap matrix&
+& %A1
+& %A2
+& %A3
+& %A4
+& %A5
+& %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+$\bullet$  & %B4
+$\bullet$  & %B5
+& %B6
+& %B7
+$\bullet$ & %B8
+$\bullet$ & %B9
+$\circ$ & %B10
+$\circ$ & %B11
+$\circ$ & %B12
+$\bullet$ & %B13
+& %B14
+& %C1
+& %C2
+& %C3
+& %C4
+& %C5
+about 100 &
+not applicable \\
+&
+KMVQL&
+\ComputerMouse & %A1
+& %A2
+\ComputerMouse & %A3
+& %A4
+& %A5
+& %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+$\circ$  & %B4
+$\circ$  & %B5
+$\circ$ & %B6
+$\bullet$ & %B7
+$\bullet$ & %B8
+& %B9
+& %B10
+& %B11
+& %B12
+$\bullet$ & %B13
+& %B14
+& %C1
+& %C2
+$\bullet$ & %C3
+& %C4
+& %C5
+4 to 6 &
+not applicable \\
+
+\hline
+\parbox[t]{2mm}{\multirow{4}{*}{\rotatebox[origin=c]{90}{Aggregation}}} &
+Mosaic displays &
+& %A1
+& %A2
+\ComputerMouse & %A3
+& %A4
+& %A5
+& %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+$\circ$  & %B4
+$\circ$  & %B5
+$\circ$ & %B6
+$\bullet$ & %B7
+$\bullet$ & %B8
+& %B9
+$\circ$ & %B10
+& %B11
+$\circ$ & %B12
+$\bullet$ & %B13
+& %B14
+& %C1
+& %C2
+$\bullet$ & %C3
+& %C4
+& %C5
+up to 4 sets &
+large (agg.) \\
+&
+Double-Decker &
+$\circ$ & %A1
+& %A2
+$\bullet$ & %A3
+& %A4
+& %A5
+& %A6
+& %A7
+$\bullet$ & %B1
+\ComputerMouse & %B2
+\ComputerMouse & %B3
+$\ComputerMouse$  & %B4
+$\bullet$  & %B5
+$\circ$ & %B6
+$\bullet$ & %B7
+$\bullet$ & %B8
+& %B9
+$\bullet$ & %B10
+& %B11
+$\bullet$ & %B12
+$\bullet$ & %B13
+& %B14
+& %C1
+$\bullet$ & %C2
+$\bullet$ & %C3
+& %C4
+& %C5
+4 to 6 &
+large (agg) \\
+
+&
+Sets'o'grams&
+\ComputerMouse & %A1
+ & %A2
+\ComputerMouse & %A3
+$\bullet$ & %A4
+\ComputerMouse & %A5
+$\bullet$ & %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+& %B4
+\ComputerMouse & %B5
+$\circ$ & %B6
+\ComputerMouse & %B7
+\ComputerMouse & %B8
+& %B9
+& %B10
+& %B11
+$\circ$ & %B12
+& %B13
+& %B14
+& %C1
+& %C2
+& %C3
+\ComputerMouse & %C4
+\ComputerMouse & %C5
+50 to 100 &
+large (agg.) \\
+&
+Radial Sets &
+\ComputerMouse & %A1
+ & %A2
+\ComputerMouse & %A3
+$\bullet$ & %A4
+\ComputerMouse & %A5
+$\bullet$ & %A6
+& %A7
+$\bullet$ & %B1
+& %B2
+& %B3
+$\bullet$ & %B4
+$\bullet$ & %B5
+$\bullet$ & %B6
+\ComputerMouse & %B7
+\ComputerMouse & %B8
+$\bullet$ & %B9
+$\bullet$ & %B10
+$\bullet$ & %B11
+$\bullet$ & %B12
+$\bullet$ & %B13
+\ComputerMouse & %B14
+& %C1
+\ComputerMouse & %C2
+$\bullet$ & %C3
+\ComputerMouse & %C4
+\ComputerMouse & %C5
+20 to 30 &
+large (agg.) \\
+&
+UpSet &
+\ComputerMouse & %A1
+\ComputerMouse & %A2
+\ComputerMouse & %A3
+$\bullet$ & %A4
+\ComputerMouse & %A5
+$\bullet$ & %A6
+& %A7 not supported
+$\bullet$ & %B1
+& %B2
+& %B3
+$\circ$ & %B4
+$\bullet$ & %B5
+$\bullet$ & %B6
+$\bullet$ & %B7
+$\bullet$ & %B8
+$\circ$ & %B9
+$\bullet$ & %B10
+& %B11 not supported
+\ComputerMouse    & %B12
+$\bullet$ & %B13
+\ComputerMouse & %B14
+& %C1
+$\bullet$ & %C2
+$\bullet$ & %C3
+\ComputerMouse & %C4
+& %C5 not supported
+20 to 30 &
+large (agg.) \\
+
+
+\hline
+\parbox[t]{2mm}{\multirow{2}{*}{\rotatebox[origin=c]{90}{Scatter}}} &
+Scatter view&
+&
+&
+&
+&
+&
+&
+&
+$\circ$ &
+&
+&
+&
+&
+&
+&
+&
+&
+&
+$\circ$ &
+&
+&
+&
+&
+&
+&
+&
+&
+hundreds &
+not applicable \\
+&
+Cluster view&
+&
+&
+&
+&
+&
+&
+&
+$\circ$ &
+&
+&
+&
+&
+&
+&
+&
+&
+&
+$\bullet$ &
+&
+&
+&
+&
+&
+&
+&
+&
+hundreds &
+not applicable \\
+
+
+\hline
+\end{tabular}}
+\hfill{}
+
+  \caption*{
+                        \parbox[t]{4cm}{
+                                \vspace{1mm}
+                                $\bullet$ Task is supported \\ \\
+                                $\circ$ Task is partially supported \\ \\ % (restricted applicability)}
+                                \ComputerMouse \hspace{1mm} Task requires interaction}
+                        \hspace{1mm}
+                        {\tiny \setlength{\parskip}{-0.2ex}
+                        \parbox[t]{4cm}{
+                            \vspace{1mm}
+                            {\textbf{A1}: Find/Select elements of a specific set } \\
+                            {\textbf{A2}: Find sets containing a specific element} \\
+                            {\textbf{A3}: Find/Select elements by set memberships} \\
+                            {\textbf{A4}: Find/Select elements by their degrees} \\
+                            {\textbf{A5}: Filter out elements by set memberships} \\
+                            {\textbf{A6}: Filter out elements by their degrees} \\
+                            {\textbf{A7}: Create a set out of certain elements}
+                        }
+                        \hspace{1mm}
+                        \parbox[t]{4cm}{
+                            \vspace{1mm}
+                            {\textbf{B1}: Find the number of sets in a family} \\
+                            {\textbf{B2/3}: Inclusion relations / hierarchies} \\
+                            {\textbf{B4/5}: Exclusion / intersection relations} \\
+                            {\textbf{B6}: Identify intersections between k sets} \\
+                            {\textbf{B7}: identify sets involved in an overlap} \\
+                            {\textbf{B8}: Identify intersections of a set} \\
+                        }
+                        \hspace{1mm}
+                        \parbox[t]{4cm}{
+                            \vspace{1mm}
+                            {\textbf{B9}: Identify the set with largest / smallest} \\
+                            {number of pair-wise set intersections} \\
+                            {\textbf{B10}: Analyze \& compare cardinalities} \\
+                            {\textbf{B11}: Analyze \& compare set similarities} \\
+                            {\textbf{B12}: Analyze \& compare set exclusiveness} \\
+                            {\textbf{B13}: Highlight specific sets, subsets, etc.}  \\
+                            {\textbf{B14}: create a set by set-theoretic operation}
+                           
+                        }
+                        \hspace{1mm}
+                        \parbox[t]{4cm}{
+                            \vspace{1mm}
+                            {\textbf{C1}: Find an element's attribute values} \\
+                            {\textbf{C2}: Attribute distribution in a set / subset} \\
+                            {\textbf{C3}: Compare attribute values between subsets} \\
+                            {\textbf{C4}: Set memberships for specific attr. values} \\
+                            {\textbf{C5}: Create a set of elements by attributes}
+                        }
+                        }
+                    }
+%                    \ComputerMouse \hspace{1mm} Task is (partially) possible via interaction with the visualization \\                   
+\end{table}
+%\caption{Table Name}
+\end{landscape}
+
+
+
+
+The comparison matrix in Table~\ref{tab:tech_x_task} reveals how the techniques in the same category tend to have similar task support characteristics.
+As expected, this demonstrates the decisive influence of the visual encoding used by a technique on the types of tasks it supports.
+The matrix also reveals that certain techniques depend heavily on interaction in supporting their tasks.
+Clearly, there is no single technique that supports all the tasks.
+The choice of the technique to use for a specific problem requires extensive analysis of the problem domain and its data characteristics.
+This is important to determine the tasks that need to be supported and the actual scalability requirements.
+% This aids prioritizing the tasks to support, the actual scalability requirements, and the limitations that can be accepted.
+
+ADD A COMPARISON TABLE FOR TECHS x other CATEGORY x Visual Features
+
+\section{Future Challenges and Opportunities}
+
+\label{sec:future_challenges}
+
+The techniques surveyed in Sect.~\ref{sec:survey} demonstrate the significant advances made in the past decade in visualizing sets and set-typed data.
+Nevertheless, research in this area is still in early stages, with many open problems and challenges that need to be addressed in the future.
+In the following we give some of these problems and provide a list of unexplored research directions that could help in addressing them.
+{\setlength{\parskip}{-0.2ex }
+
+\subsection{Open Problems}
+}
+% These problems need further research to improve on state-of-the-art techniques.
+Some of the issues we list are specific to certain techniques, while others are more generic in set visualization.
+Additionally, some problems are concerned with complicated forms of set-typed data.
+
+{\setlength{\parskip}{-0.2ex }
+
+  \paragraph{ \textbf{Generating Euler diagrams with specific properties:}}
+%    it is not always possible to generate diagrams that are well-matched, well-formed, area-proprtional, or use certain shapes (e.g. circles or convex polygons).
+    There are no generic tools that indicate, for a given input,  whether it is possible or not to generate diagrams that are well-matched, well-formed, area-proportional, and/or use certain shapes (e.g. circles or convex polygons).
+  Rodgers \cite{rodgers2013survey} elaborated on related open research questions in generating Euler diagrams.
+    Tools that determine whether a diagram can be drawn with desired properties and propose alternative solutions to non-drawable cases (e.g. using shading or approximate areas) would improve the quality of the generated Euler diagrams and their applicability in various domains.
+  In this regard, a high-level algorithm has been proposed to determine the drawability of a well-formed diagram and generates the diagram in that case  \cite{FlowerEtAl2008}, but no implementation is available yet.
+     % related to these properties and to other issues with Euler diagrams.
+   
+  \paragraph{ \textbf{Scalability:}}
+    As Table~\ref{tab:tech_x_task} shows, it is not always possible to support tasks if they have particular scalability requirements.
+    Moreover, the scalability of certain techniques is severely limited, such as overlays.
+    Improving upon these limits is necessary to address various real-world problems that involve a large number of sets and/or elements.
+   
+  \paragraph{ \textbf{The role of ordering:}}
+    By definition, set-typed data impose no inherent ordering neither on the elements nor the sets.
+    However, the order in which sets and elements are depicted has a significant impact on the patterns and relations revealed by the visualization.
+    Though reordering problems are usually NP-complete, a lot of work has been done for reordering generic matrices and node-link diagrams to reveal clusters and/or  reduce clutter.
+    This work needs to be re-visited from sets perspective, e.g. by incorporating set-related data features such as element degrees.
+    Also, more work is needed on the role of ordering in aggregation-based techniques. % like Mosaic Displays.
+   
+  \paragraph{ \textbf{Evaluation:}}
+    There is a clear lack of empirical user studies that assess the effectiveness of different techniques in performing different tasks.
+    Some comparative studies focus on techniques from the same category, such as overlays \cite{linesets2011, MeulemansEtAl2013_kelpfusion},
+    while few studies compare techniques from different categories \cite{ChapmanSRMB14}.
+   
+   
+%    , little has been done to compare available techniques especially from different categories.
+    More evaluation work is needed to determine which techniques work well for which data characteristics and tasks, and to steer future research toward promising directions.
+   
+  \paragraph{ \textbf{Visualizing sets in the context of other data types:}}
+    Overlay techniques reveal set memberships of elements placed according to other data features.
+    However, they offer limited possibilities as the layout of the overlays cannot influence the element placement.
+    Designing set-aware visualizations can improve on this:
+    As example, a set-aware graph layout would compute a node placement that reduces edge crossing and produces convex-shaped overlays at the same time.
+    Further work is needed to visualize sets over elements in a timeline, a tree, or a multi-variate visualization.
+   
+  \paragraph{ \textbf{Comparing multiple set families:}}
+    In many scenarios, multiple instances of a set family are compared (e.g. how skill overlaps change across different companies).
+    With few sets, small multiples of Euler diagrams help in comparing the set relations between the respective set families.
+    As example, the comparison might involve finding which set relations change most / least across the different families.
+    Dedicated techniques are needed to support such comparison tasks in a scalable way in the number of sets and families.
+
+  \paragraph{ \textbf{Time-varying set-typed data:}}
+    As with many types of data, set-typed data can vary over time.
+    For example, set memberships might change over time, leading to changes in set relations.
+    Also, the attribute values of the elements might change over time even with static set memberships.
+    Visualizing such changes is challenging, as the data is already complex.
+    BubbleSets allow smooth re-computation of set overlays, making them suited to track the spatial distribution of set elements e.g. in an animated scatter plot.
+    A technique similar to Parallel Sets was proposed to visualize object-group changes over multiple time steps \cite{bremm2011interactive}, however, allowing an element to belong to one set at a time.
+
+
+  \paragraph{ \textbf{Visualizing fuzzy and uncertain set memberships:}}
+    Real-world data typically involve uncertainty that result in fuzzy set memberships.
+    \emph{disk diagram} \cite{park2010disk} is a technique for analyzing fuzzy data using interactive visualization of fuzzy set operations.
+    More work on both analytical and visual methods is needed to communicate the fuzziness in the data and study its effect on various set-related tasks.
+%    More work on both analytical and visual methods is needed
+
+\subsection{Possible Opportunities}
+
+}
+
+Here we list ideas and research directions that could improve on existing set visualization techniques.
+
+%\begin{itemize}
+{
+\setlength{\parskip}{-0.2ex }
+
+
+  \paragraph{ \textbf{Interaction}}
+%    The techniques we surveyed often make limited or even no use of interaction to support the analysis tasks.
+    % Some region- and line-based techniques, untangled Euler diagrams, PivotPaths, Jigsaw's list view, and Radial Sets allow different to some extents.
+    opens new possibilities for addressing various challenges with analyzing and visualizing set-typed data.
+    For example, when generating Euler diagrams, the user could specify certain constraints and properties or choose where to take a compromise when they are not satisfiable.
+    Interactivity makes simplifying complex visualizations possible by showing certain information on demand and selecting certain parts to explore in more detail.
+    It also facilitates various comparisons within one set family or across multiple families.
+    % Matrix reordering also profits from involving the user in the process, e.g. to restrict changes to certain rows or columns.
+    Interaction allows influencing matrix reordering, e.g. to restrict changes to certain rows or columns.
+%    Likewise, interaction could play an essential role in exploring large set-typed data at multiple levels of detail and applying appropriate data reduction methods.
+    Finally, intuitive interactions allow sets to be combined using Boolean operations, performing multi-faceted search over a set of elements, or applying appropriate filtering and data reduction techniques to explore large set-typed data.
+   
+
+  \paragraph{ \textbf{Coordinated multiple views}} can reduce the complexity of the data by showing information at multiple levels of detail.
+    This can also provide complementary perspectives on the data (e.g. overlap matrix + spatial set distribution) to enrich the analysis.
+   
+  \paragraph{ \textbf{Small multiples}} could provide solutions to visualizations that are severely limited in the number of sets, such as Euler diagrams, Mosaic Displays or Double-Decker plots.
+    They can also be used to compare, for instance, data with certain attribute values to determine if they correlate with certain set relations or membership patterns.
+
+  \paragraph{ \textbf{Hybrid representations}} might be useful in certain cases, especially when the sets can be semantically divided in two groups.
+    An example, in a 3 x 3 matrix or mosaic display of 3 sets, each cell or tile can additionally depict how its elements belong to another group of sets by using a different visualization such as a bar chart or an Euler diagram.
+    Another example is combining matrix-based and frequency-based representations to visualize sets involved in an overlap and the overlap size.
+   
+  \paragraph{ \textbf{Matrix-based representations}} are not fully exploited for visualizing set-typed data.
+    They are relatively simple and clutter-free, and fairly scalable in the number of rows and columns.
+    Moreover, there are several possibilities to encode multiple values in a matrix cell \cite{alper2013weighted}.   
+    This can be employed to show aggregated information on the elements and their attributes, as with aggregation-based techniques.
+     
+  \paragraph{ \textbf{Analytical methods can transform  large set-typed data}}  into volumes suited for visualization and still preserving the most important information.
+    In particular, several aggregations of the elements are possible based on their set-memberships, degrees, and attribute values.
+    Similarly, intuitive set-operations can be used e.g. to aggregate multiple sets, or to replace a large family of sets with a smaller family over the same elements.
+   
+  \paragraph{\textbf{Identifying special cases and forms of set-typed data.}}
+    For example, when the sets exhibit no intersection relations, treemaps would be a natural choice to visualize their containment hierarchy.
+    Another example that arise in voting analysis, is when each element belongs to a constant number of sets, e.g. exactly to 3 sets out of 10.
+    Such set memberships can be represented using three categorical variables which result in ${{10}\choose{3}} =120$ non-redundant overlap combinations (many of     them potentially empty).
+    This is significantly lower than $2^{10}=1024$ possible overlaps in the general case, and can be handled by categorical visualization techniques such as Parallel Sets.
+    % Both treemaps and a variation of Parallel Sets enable comparing the sizes of few nonempty overlaps in relation with the sets involved in them.
+
+    Many other special cases can be identified in practical applications such as very sparse membership matrix, skewed or two-mode distribution of membership degrees, etc.
+    The characteristics of these cases need to be studied extensively e.g. to identify if they satisfy certain Euler diagram drawability properties, can simplify existing visualization techniques, allow for new forms of visual representations or overlays, or lend themselves to new ways of aggregation.
+}
+     
+\section{Conclusion}
+
+The powerful and generic concepts of set theory make sets and set relations essential data models in several data analysis scenarios.
+Unlike common data types in information visualization such as graphs and trees, sets have been largely treated as data containers to group related elements or to illustrate overlaps between two or three groups.
+Nevertheless, a number of techniques have been devised to visualize sets and data related to them in the past decade.
+By emphasizing the notion of set-typed data, we have identified their specific characteristics as well as several measures and tasks commonly associated with this data type in visualization.
+
+We have surveyed relevant literature on visualization techniques that can be applied to address these characteristics and tasks related to set-typed data, and have classified these techniques into seven categories, according to the main visual representation they use for depicting set relations.
+For each technique, we have analyzed which tasks it supports and its scalability with respect to the number of sets and elements.
+We have also outlined the general advantages and disadvantages of each representation, and which information they can represent from the data.
+%, and which tasks the respective techniques support and at which scalability.
+This provides guidance for designers of set visualizations in choosing appropriate techniques for their data and tasks.
+Finally, we have examined major open problems in the area,
+and discussed various ideas that are worth investigating as opportunities to address open problems or to improve on state-of-the-art techniques.
+A visual browser of the surveyed techniques along with additional resources are available at \URL{http://www.setviz.net}.
+
+%\end{itemize}
+
+\vspace{1mm}
+{\small \setlength{\parindent}{0pt}
+{\textbf{ Acknowledgement}
+% We thank the authors of the surveyed techniques for providing supplementary materials about this work.
+This work was partially supported by the Austrian Federal Ministry of Economy, Family and Youth via CVAST, a Laura Bassi Centre of Excellence (No. 822746),
+and the Austrian Science Fund (FWF) via the KAVA-Time project (No. P25489).
+% Acknowledgement Kent Acknowledgement Kent Acknowledgement Kent Acknowledgement Kent Acknowledgement Kent Acknowledgement Kent.
+
+}}
+
+%\bibliographystyle{eg-alpha}
+\bibliographystyle{eg-alpha-doi}
+
+\bibliography{references}
+
+\section*{Biography}
+
+\setlength{\intextsep}{0pt}%
+\setlength{\columnsep}{8pt}%
+
+\paragraph{\textbf{Bilal Alsallakh}}
+\begin{wrapfigure}{r}{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{images/authors/bilal.png}
+\end{wrapfigure}
+is a research assistant at Vienna University of Technology, Austria, in the areas of information visualization and visual analytics.
+During his PhD, he developed the Radial Sets technique to visualize large overlapping sets \cite{alsallakh2013radial}.
+His research interests encompass visual analysis of set-typed, relational, and categorical data, as well as software visualization, pattern recognition, and time-series analysis.
+% His related IEEE VAST 2012 work on visualizing categorical data was awarded an honourable mention.
+
+\paragraph{\textbf{Luana Micallef}}
+\begin{wrapfigure}[8]{r}{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{images/authors/luana.png}
+\end{wrapfigure}
+is a Postdoctoral Researcher at the Helsinki Institute for Information Technology HIIT, Finland.
+She was previously a Research Fellow at the University of Kent, UK, where she completed her PhD on 'Visualizing Set Relations and Cardinalities Using Venn and Euler Diagrams'.
+She devised different diagram drawing software \cite{MicallefRodgers2014_eulerForce, MicallefRodgers2014_eulerAPE, MicallefEtAl2012} and presented her work at various institutes, including a featured talk for the Analytics and Big Data Society, Charlotte, NC.
+Her 2012 IEEE InfoVis paper \cite{MicallefEtAl2012} on Euler diagrams for Bayesian reasoning was awarded an honourable mention.
+% One of her Euler diagram drawing software was selected for participation in the ACM Student Research Competition at the 2012 Grace Hopper Celebration.
+Luana co-edited the first special journal issue on visualization and reasoning using Euler Diagrams in 2014, and serves on the Steering Committee of the Euler Diagrams workshop, for which she served on the Programme Committee in 2014 and co-chaired in 2012.
+
+
+\paragraph{\textbf{Wolfgang Aigner}}
+\begin{wrapfigure}{r}{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{images/authors/wolfgang.png}
+\end{wrapfigure}
+is lecturer at St. Poelten University of Applied Sciences, Austria.
+His main research interests include visual analytics and information visualization. % and he was involved in developing the Radial Sets technique \cite{alsallakh2013radial}.
+Wolfgang Aigner received his PhD degree and habilitation from the Vienna University of Technology in 2006 and 2013.
+He authored and co-authored several dozens of peer-reviewed articles as well as the recently published book "Visualization of Time-Oriented Data" (Springer, 2011) that is devoted to a systematic view on this topic.
+% For more information see \URL{http://mc.fhstp.ac.at/people/wolfgang-aigner}
+
+\paragraph{\textbf{Helwig Hauser}}
+\begin{wrapfigure}{r}{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{images/authors/helwig.png}
+\end{wrapfigure}
+is professor in visualization at the University
+of Bergen, Norway, where he is leading a research group
+on visualization. His research interests are diverse in visualization,
+including interactive visual analysis, the visualization
+of multi-dimensional and multi-variate data, and the
+application of visualization to the fields of medicine, geosciences,
+biology, fluid dynamics, etc. Helwig Hauser was
+the scientific director of the VRVis Research Center in Vienna,
+Austria, and an assistant professor at the Vienna University
+of Technology, Austria, from which he also received
+his graduate and doctoral degrees (in 1994 and 1998) as well
+as his habilitation (in 2003). He received several awards, including
+the bi-annual Heinz-Zemanek Award in computer
+science in 2006 and the Dirk Bartz Prize for visual computing
+in medicine in 2013. Helwig Hauser serves as paper
+chair of central conferences including EuroVis, InfoVis, and
+PacificVis, and is associate editor of major journals, including
+Computer Graphics Forum and IEEE TVCG. He is also
+member of several committees, including the EuroVis Steering
+committee.
+
+\paragraph{\textbf{Silvia Miksch}}
+\begin{wrapfigure}{r}{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{images/authors/silvia.png}
+\end{wrapfigure}
+is Associate University Professor and head of the Information and Knowledge Engineering research group at Vienna University of Technology, Austria.
+Her main research interests are Information Visualization and Visual Analytics, Process and Plan Management, Interaction Design, User-Centered Design, and Time.
+% Her main research interests are information visualization and visual analytics (in particular Focus+Context and Interaction methods), and Time.
+Silvia was professor and head of the Department of Information and Knowledge Engineering at Danube University Krems, Austria.
+In 2010 she established the awarded Laura Bassi Centre of Expertise CVAST.
+% She was involved in developing the Radial Sets technique \cite{alsallakh2013radial},
+Silvia Miksch co-authored various state-of-the-art survey articles, and co-authored the recently published book "Visualization of Time-Oriented Data" (Springer, 2011) that is devoted to a systematic view on this topic. % For more information see \URL{http://www.cvast.tuwien.ac.at/biblio}
+She served as paper co-chair  of several conferences including IEEE VAST 2010 and 2011 and EuroVis 2012, and on the editorial board of several journals including Artificial Intelligence in Medicine (AIM-J, Elsevier), AI Communications (AICOM, IOS Press), and IEEE TVCG.
+
+\paragraph{\textbf{Peter Rodgers}}
+\begin{wrapfigure}{r}{0.35\linewidth}
+\centering
+\includegraphics[width=\linewidth]{images/authors/peter.png}
+\end{wrapfigure}
+is a Reader in the School of Computing at the University of Kent, United Kingdom.
+His research interests are in diagrammatic information visualization.
+He has developed many set-based visualization tools, particularly for Venn and Euler diagrams.
+They include area-proportional methods \cite{RodgersEtAl2010_convex, RodgersEtAl2014}, general embedding techniques and 3D diagrams \cite{RodgersEtAl2012_3D}.
+Peter has numerous publications on the topic \cite{RodgersEtAl2008_general, StapletonEtAl2011_inductive, StapletonEtAl2011_piercings, RodgersEtAl2012_wellformedness}, including a recent survey paper on Euler diagrams \cite{rodgers2013survey}.
+He is the recipient of a Royal Society Industrial Fellowship, and was principal investigator on the three year UK Research Council project 'Visualization with Euler Diagrams'.
+Peter was co-founder of the Euler Diagrams Workshop series in 2005,
+and General Chair of the Diagrams conference in 2012.
+
+
+
+\end{document}
+
+
+% Uncovered / less relevant:
+% Path-based support for hypergraphs \cite{brandes2012path}
+
+
+% A comparison of set-based and graph-based visualisations of overlapping classification hierarchies \cite{graham2000comparison}
+% is this about matrices? => check!
+

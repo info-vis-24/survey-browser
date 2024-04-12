@@ -1,0 +1,38 @@
+.sparkline {
+	display: inline-block;
+	position: relative;
+	bottom: -2px;
+	margin-right: 3px;
+	min-width: 6px;
+	height: 16px;
+}
+
+.sparkline .container {
+	display: inline-block;
+	border: 1px solid black;
+}
+
+.sparkline .container.total {
+	margin-left: 1px;
+}
+
+.sparkline .selector {
+	display: inline-block;
+	width: 4px;
+	height: 14px;
+	background-color: white;
+	display: table-cell;
+	vertical-align: bottom;
+}
+
+.sparkline .selector.total {
+	: 5px;
+}
+
+.sparkline .bar {
+}
+
+.sparkline .bar.total {
+	background-color: #666666;
+	margin-left: 0px;
+}

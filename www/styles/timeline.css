@@ -1,0 +1,12 @@
+svg:not(:root) {
+    overflow: hidden;
+}
+
+.chart rect.bar {
+    cursor: pointer;
+}
+
+.chart rect.bar:hover {
+    fill: #AAAAAA;
+}
+

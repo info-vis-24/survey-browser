@@ -1,0 +1,181 @@
+.entry {
+    margin-bottom: 5px;
+    background: #EEEEEE;
+    counter-increment: problem;
+    border: 1px solid black;
+    border-left: 5px solid black;
+    padding: 10px;
+    padding-bottom: 0px;
+    overflow: auto;
+}
+
+.entry_img {
+    width: 100px;
+    float: left;
+    margin-right: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.entry .thumb {
+    border: 1px solid silver;
+    max-width: 100px;
+}
+
+.entry_main {
+    overflow: auto;
+}
+
+.entry .id:before {
+    content: counter(problem) ". ";
+    color: gray;
+}
+
+.entry .id {
+    font-size: 10pt;
+    padding: 0px;
+    margin: 0px;
+    margin-right: 25px;
+    display: inline-block;
+}
+
+.entry .series, .entry .year {
+    font-size: 10pt;
+    padding: 0px;
+    margin: 0px;
+    margin-left: 5px;
+    color: #999999;
+    display: inline-block;
+}
+
+.entry .title {
+    font-weight: bold;
+    display: block;
+}
+
+.entry .authors {
+    font-size: 11pt;
+    overflow: auto;
+    cursor: pointer;
+}
+
+.entry .author {
+    font-size: 11pt;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.entry .author .first_name {
+    font-size: 8pt;
+}
+
+.entry .tags {
+    font-size: 11pt;
+}
+
+.entry .tags .tag_category {
+    font-size: 8pt;
+    font-weight: bold;
+}
+
+.entry .tags .tag {
+    color: #000000;
+}
+
+.entry .tags .add_tag {
+}
+
+.entry .tags .add_tag .tag_input {
+    display: none;
+}
+
+.entry .abstract {
+    font-size: 10pt;
+    font-style: italic;
+    margin: 5px 10px;
+    position: relative;
+    cursor: pointer;
+}
+
+.entry .abstract:hover {
+    color: #555555;
+}
+
+.entry .abstract .expand {
+    margin: 0px 2px;
+    font-family: 'ModernPictogramsNormal';
+    font-size: 16pt;
+    position: absolute;
+    font-style: normal;
+    bottom: -4px;
+}
+
+.entry .comment {
+    font-size: 10pt;
+    border: 1px solid silver;
+    padding: 5px;
+}
+
+.entry .label {
+    font-weight: bold;
+}
+
+.entry .links {
+    font-size: 8pt;
+    float: right;
+    #border: 1px solid black;
+}
+
+.entry .links a:before {
+    content: "|";
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+.entry .links a {
+}
+
+.entry .links a:visited {
+    color: #666666;
+}
+
+.entry .reference {
+    clear: both;
+    font-size: 9pt;
+    margin-left: 20px;
+    font-style: italic;
+    font-weight: bold;
+}
+
+.entry ul {
+    clear: both;
+}
+
+.entry .button {
+    margin: 0px;
+    border: none;
+    border-radius: 0px;
+}
+
+.entry .entry_control {
+    float: right;
+    margin: 0px;
+    padding: 0px;
+}
+
+.entry .select_similar {
+    float: left;
+}
+
+.entry .bibtex_control {
+    float: right;
+}
+
+.entry .CodeMirror {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 1px solid silver;
+    font-size: 8pt;
+    height: 300px;
+    clear: both;
+}
