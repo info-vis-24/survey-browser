@@ -8,8 +8,7 @@
 
 #selectors_container {
     margin-top: 10px;
-
-
+    overflow: auto;
 }
 
 #selectors_container .label {
@@ -21,85 +20,78 @@
 
 #selectors_container .button {
     margin-top: 8px;
-}
-
-#selectors {
     float: left;
-    margin-bottom: 10px;
-    overflow: auto;
-    padding: 0 10px;
 }
 
-#selectors .selector {
+#selectors_container .selector {
     border-radius: 7px;
     float: left;
     color: white;
-    margin: 2px 0px;
-    margin-right: 8px;
+    margin: 2px 8px 2px 0;
     min-width: 27px;
     min-height: 27px;
     border: 2px solid white;
     box-shadow: 1px 1px 5px #AAAAAA;
 }
 
-#selectors .selector.inverted .text {
+#selectors_container .selector.inverted .text {
     text-decoration: line-through;
 }
 
 
-#selectors .selector.locked {
+#selectors_container .selector.locked {
     border: 2px solid black;
 }
 
-#selectors .selector div {
+#selectors_container .selector div {
     display: inline-block;
 }
 
-#selectors .selector_content {
+#selectors_container .selector_content {
     border-left: 1px solid white;
     padding: 2px;
 }
 
-#selectors .selector .lock, .invert, .remove {
+#selectors_container .selector .lock, .invert, .remove {
     cursor: pointer;
 }
 
-#selectors .selector .lock:hover, .invert:hover, .remove:hover {
+#selectors_container .selector .lock:hover, .invert:hover, .remove:hover {
     color: silver;
 }
 
-#selectors .selector .invert.inverted:after {
+#selectors_container .selector .invert.inverted:after {
     color: #000000;
 }
 
 
-#selectors .selector .lock:after {
-    margin: 0px 2px;
+#selectors_container .selector .lock:after {
+    margin: 0 2px;
     font-family: 'ModernPictogramsNormal';
     content: "q";
     font-size: 16pt;
 }
 
-#selectors .selector .lock.locked:after {
+#selectors_container .selector .lock.locked:after {
     content: "n";
     color: #000000;
 }
 
-#selectors .selector .invert:after {
-	margin: 0px 2px;
+#selectors_container .selector .invert:after {
+	margin: 0 2px;
     font-family: 'ModernPictogramsNormal';
     content: "e";
     font-size: 16pt;
 }
 
-#selectors .selector .remove:after {
-	margin: 0px 2px;
+#selectors_container .selector .remove:after {
+	margin: 0 2px;
     font-family: 'ModernPictogramsNormal';
     content: "X";
     font-size: 16pt;
 }
 
-#selectors .selector .text {
+#selectors_container .selector .text {
     background: white;
     opacity: 0.8;
     color: black;

@@ -1,12 +1,12 @@
 html {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-    font-family: Calibri, Arial, Sans;
-    margin: 0px;
-    padding: 0px;
+    font-family: Calibri, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
 label {
@@ -34,7 +34,7 @@ a:visited {
 .symbol {
     font-family: 'ModernPictogramsNormal';
     font-size: 16pt;
-    margin: 0px 2px;
+    margin: 0 2px;
 }
 
 .ui-dialog .ui-dialog-content {
@@ -51,6 +51,12 @@ a:visited {
     color: #666666;
     font-size: 10pt;
     cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .button:hover {
@@ -68,7 +74,7 @@ a:visited {
 }
 
 #header {
-
+    padding-bottom: 0;
 }
 
 #title {
@@ -78,7 +84,7 @@ a:visited {
 
 #title h1 {
     float: left;
-    margin: 0px 0px;
+    margin: 0 0;
 }
 
 #title h1 a {
@@ -96,45 +102,139 @@ a:visited {
     margin-left: 30px;
 }
 
+#search {
+    float: right;
+    margin-top: 12px;
+}
+
+#search input {
+    width: 250px;
+    font-size: 14pt;
+}
+
+#control {
+    overflow-y: scroll !important;
+}
+
 #control h2 {
     font-size: 12pt;
     border-bottom: 1px solid black;
     clear: both;
+    margin: 0 0 10px 0;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-#search {
-
+#control h2:hover {
+    background: #EEEEEE;
 }
 
-#search input {
-    width: 420px;
-    font-size: 14pt;
+#control h2 .symbol {
+    font-size: 10pt;
 }
 
-#tag_cloud {
-    margin: 20px 0px;
+#control .tag_cloud_filter {
+    font-size: 9pt;
+    float: right;
+    position: relative;
+    height: 0;
+    top: -1px;
+    left: -100px;
+    margin: 0;
 }
 
-.tag_category .label {
+#control .tag_cloud_filter input {
+    width: 70px;
+    font-size: 8pt;
+}
+
+#control .tag_occurrence {
+    font-size: 9pt;
+    float: right;
+    position: relative;
+    height: 0;
+    top: -4px;
+    left: -1px;
+}
+
+#control .button {
+    text-align: center;
+    display: inline-block;
+    padding: 2px;
+    min-width: 15px;
+    height: 15px;
+    font-size: 9pt;
+}
+
+#control .button.small {
+    padding: 0;
+}
+
+#control .button .symbol {
+    font-size: 11pt;
+}
+
+#control .label {
     font-size: 10pt;
     font-weight: bold;
+    vertical-align: middle;
+}
+
+.tag_cloud {
+    margin: 20px 0
+}
+
+#clusters .label {
+    width: 100%;
+    display: block;
+    float: left;
+}
+
+#clustering_controls {
+    font-size: 9pt;
+}
+
+.n_clusters {
+    clear: both;
+    float: left;
+    margin: 0 10px;
+}
+
+.clustering_criteria {
+    margin-top: 1px;
+    float: left;
+    margin-right: 10px;
+}
+
+.clustering_criteria input {
+    position: relative;
+    top: 3px;
+    margin-left: 10px;
+    display: inline-block;
+}
+
+#create_clustering {
+    position: relative;
+    top: -2px;
+    float: left;
 }
 
 .tag {
     color: #888888;
     display: inline-block;
-    padding: 0px;
-    padding-right: 12px;
+    padding: 0 12px 0 0;
     margin: 1px;
     cursor: pointer;
 }
 
-/*.tag:hover:after {*/
-/*content: 'x';*/
-/*font-family: 'ModernPictogramsNormal';*/
-/*position: absolute;*/
-/*font-size: 12pt;*/
-/*}*/
+.tag:hover {
+    background: #EEEEEE;
+}
 
 .tag.active, .author.active {
     background: #C0C0C0;
@@ -144,50 +244,120 @@ a:visited {
     text-decoration: line-through;
 }
 
-#tag_cloud .authorized {
+.tag_cloud .authorized {
     color: black;
 }
 
-#tag_cloud .tag .tag_frequency {
+.tag_cloud .tag .tag_frequency {
     font-size: 8pt;
     position: relative;
     top: 2px;
+    left: 1px;
 }
 
-#tag_cloud .freq1 {
+.tag_cloud .freq1 {
+    font-size: 9pt;
+}
+
+.tag_cloud .freq2 {
     font-size: 10pt;
 }
 
-#tag_cloud .freq2 {
+.tag_cloud .freq3 {
     font-size: 11pt;
 }
 
-#tag_cloud .freq3 {
+.tag_cloud .freq5 {
     font-size: 12pt;
 }
 
-#tag_cloud .freq5 {
+.tag_cloud .freq10 {
     font-size: 13pt;
 }
 
-#tag_cloud .freq10 {
+.tag_cloud .freq20 {
     font-size: 14pt;
 }
 
-#tag_cloud .freq30 {
+.tag_cloud .freq35 {
     font-size: 15pt;
 }
 
-#tag_cloud .freq100 {
+.tag_cloud .freq50 {
     font-size: 16pt;
 }
 
+.tag_cloud .freq80 {
+    font-size: 17pt;
+}
+
+.tag_cloud .freq120 {
+    font-size: 18pt;
+}
+
+.tag_cloud .tag .terms {
+    margin-left: 15px;
+    font-size: 9pt;
+}
+
+.clustering {
+    margin: 10px 0;
+}
+
 #result {
+    margin: 0;
+    padding: 0 !important;
+}
+
+#result_header {
+    padding: 5px;
+    border-bottom: 1px solid silver;
     overflow: auto;
+}
+
+#stats {
+    display: inline-block;
+    margin-right: 20px;
+    height: 19px;
+    font-weight: bold;
+}
+
+#sorting_description {
+    font-size: 10pt;
+    display: inline-block;
+}
+
+#result_body {
+    padding: 10px;
+}
+
+#show_more_entries {
+    clear: both;
+    float: left;
+}
+
+#show_all_entries {
+    float: left;
 }
 
 #footer {
     font-size: 10pt;
+}
+
+#footer .button {
+    margin-top: 0;
+    margin-bottom: 0;
+    top: -3px;
+    position: relative;
+}
+
+#extra_pages_list {
+    float: right;
+    height: 19px;
+}
+
+#extra_pages_list .button {
+    /*top: 0;*/
 }
 
 #menu {
@@ -199,18 +369,35 @@ a:visited {
     cursor: pointer;
 }
 
-#menu .button {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    top: -3px;
-    position:relative;
-}
-
 #menu .button .symbol {
     font-size: 14pt;
 }
 
-#stats {
-    float: right;
-    height: 19px;
+.CodeMirror {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border: 1px solid silver;
+    font-size: 8pt;
+    height: 300px;
+    clear: both;
 }
+
+.bibtex_status {
+    font-size: 8pt;
+}
+
+.bibtex_status .info {
+    border: 1px solid silver;
+    background: #f7f7f7;
+    margin: 5px 0;
+    padding: 5px;
+}
+
+.bibtex_status .error {
+    border: 1px solid #aa1111;
+    background: #fef1ec;
+    margin: 5px 0;
+    padding: 5px;
+}
+
+

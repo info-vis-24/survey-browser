@@ -4,8 +4,7 @@
     counter-increment: problem;
     border: 1px solid black;
     border-left: 5px solid black;
-    padding: 10px;
-    padding-bottom: 0px;
+    padding: 10px 10px 0;
     overflow: auto;
 }
 
@@ -33,19 +32,18 @@
 
 .entry .id {
     font-size: 10pt;
-    padding: 0px;
-    margin: 0px;
-    margin-right: 25px;
+    padding: 0;
+    margin: 0 25px 0 0;
     display: inline-block;
 }
 
 .entry .series, .entry .year {
     font-size: 10pt;
-    padding: 0px;
-    margin: 0px;
-    margin-left: 5px;
+    padding: 0;
+    margin: 0 0 0 5px;
     color: #999999;
     display: inline-block;
+    cursor: hand;
 }
 
 .entry .title {
@@ -82,6 +80,10 @@
     color: #000000;
 }
 
+.entry .tags .tag:hover {
+    background: #DDDDDD;
+}
+
 .entry .tags .add_tag {
 }
 
@@ -102,7 +104,7 @@
 }
 
 .entry .abstract .expand {
-    margin: 0px 2px;
+    margin: 0 2px;
     font-family: 'ModernPictogramsNormal';
     font-size: 16pt;
     position: absolute;
@@ -151,16 +153,42 @@
     clear: both;
 }
 
+.entry .clusters {
+    font-size: 10pt;
+}
+
+.entry .clusters .label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.entry .cluster {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.entry .cluster:hover {
+    background: #DDDDDD;
+}
+
 .entry .button {
-    margin: 0px;
+    margin: 0 10px 0 0;
     border: none;
-    border-radius: 0px;
+    border-radius: 0;
+}
+
+.entry .citation_incoming_frequency, .entry .citation_outgoing_frequency {
+    font-size: 8pt;
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 .entry .entry_control {
     float: right;
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 .entry .select_similar {
@@ -171,11 +199,32 @@
     float: right;
 }
 
-.entry .CodeMirror {
-    margin-top: 2px;
-    margin-bottom: 2px;
+.entry .bibtex_control .symbol {
+    font-size: 10pt;
+    color: #CD9000;
+}
+
+.entry .bibtex_warnings {
+    font-size: 9pt;
+    background: #fcefa1;
+    margin: 0;
+    padding: 2px;
     border: 1px solid silver;
-    font-size: 8pt;
-    height: 300px;
     clear: both;
+}
+
+.entry .bibtex_warnings .label {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.entry .bibtex_warnings ul {
+    padding: 0;
+    margin: 0;
+}
+
+.entry .bibtex_warnings li {
+    margin-left: 20px;
+    list-style-type: square;
+    cursor: pointer;
 }
