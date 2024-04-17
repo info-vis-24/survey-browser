@@ -357,6 +357,16 @@
         "type": "inproceedings",
         "year": "2010"
     },
+    "Luz2019ACO": {
+        "author": "Saturnino Luz and Masood Masoodian",
+        "journal": "Information Visualization",
+        "pages": "297 - 310",
+        "title": "A comparison of linear and mosaic diagrams for set visualization",
+        "type": "article",
+        "url": "https://api.semanticscholar.org/CorpusID:64871008",
+        "volume": "18",
+        "year": "2019"
+    },
     "MeulemansEtAl2013_kelpfusion": {
         "author": "Meulemans, W. and Henry Riche, N. and Speckmann, B. and Alper, B. and Dwyer, T.",
         "doi": "10.1109/TVCG.2013.76",
