@@ -2,7 +2,7 @@
  * Name as used as title for the main page
  * @type {string}
  */
-var title = 'SurVis Literature Collection';
+var title = 'Set Visualization Survey';
 
 /**
  * Relative path to the data directory
@@ -29,19 +29,23 @@ var stylesDir = 'styles/';
  * minTagFrequency: minimum frequency of a tag to be displayed
  * @type {{field: string, title: string, minTagFrequency: number}[]}
  */
-var tagCloudOptions = [{
+var tagCloudOptions = [
+  {
     field: 'keywords',
     title: 'Keywords',
-    minTagFrequency: 1
-}, {
+    minTagFrequency: 1,
+  },
+  {
     field: 'author',
     title: 'Authors',
-    minTagFrequency: 1
-}, {
+    minTagFrequency: 1,
+  },
+  {
     field: 'series',
     title: 'Series',
-    minTagFrequency: 1
-}];
+    minTagFrequency: 1,
+  },
+];
 
 /**
  * If BibTeX entries (and tags) should be editable
@@ -54,15 +58,15 @@ var editable = true;
  * @type {{html: string, id: string}}
  */
 var paper = {
-    html: 'Sample literature collection for <b><a href="http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf" target="_blank">SurVis</a></b>',
-    id: 'Beck2016Visual'
+  html: 'An extension of Bilal et al. (2014). Visualizing sets and set-typed data: State-of-the-art and future challenges.',
+  //   id: 'Beck2016Visual',
 };
 
 /**
  * Extra pages like an about page that will be listed in the footer an can be opened on demand (page name -> path)
  */
 var extraPages = {
-    'about': 'about.html'
+  about: 'about.html',
 };
 
 /**
