@@ -1,4 +1,205 @@
 ﻿define({ entries : {
+    "10.1007/978-3-662-45803-7_38": {
+        "abstract": "We describe MapSets, a method for visualizing embedded and clustered graphs. The proposed method relies on a theoretically sound geometric algorithm, which guarantees the contiguity and disjointness of the regions representing the clusters, and also optimizes the convexity of the regions. A fully functional implementation is available online and is used in a comparison with related earlier methods.",
+        "address": "Berlin, Heidelberg",
+        "author": "Efrat, Alon and Hu, Yifan and Kobourov, Stephen G. and Pupyrev, Sergey\",",
+        "booktitle": "Graph Drawing",
+        "editor": "Duncan, Christian and Symvonis, Antonios\",",
+        "isbn": "978-3-662-45803-7",
+        "pages": "452--463",
+        "publisher": "Springer Berlin Heidelberg",
+        "title": "MapSets: Visualizing Embedded and Clustered Graphs",
+        "type": "inproceedings",
+        "year": "2014"
+    },
+    "10.1093/bioinformatics/bty109": {
+        "abstract": "Venn and Euler diagrams are extensively used for the visualization of relationships between experiments and datasets. However, representing more than three datasets while keeping the proportions of each region is still not feasible with existing tools.We present an algorithm to render all the regions of a generalized n-dimensional Venn diagram, while keeping the area of each region approximately proportional to the number of elements included. In addition, missing regions in Euler diagrams lead to simplified representations. The algorithm generates an n-dimensional Venn diagram and inserts circles of given areas in each region. Then, the diagram is rearranged with a dynamic, self-correcting simulation in which each set border is contracted until it contacts the circles inside. This algorithm is implemented in a C++\u2009tool (nVenn) with or without a web interface. The web interface also provides the ability to analyze the regions of the diagram.The source code and pre-compiled binaries of nVenn are available at https://github.com/vqf/nVenn. A web interface for up to six sets can be accessed at http://degradome.uniovi.es/cgi-bin/nVenn/nvenn.cgi.Supplementary data are available at Bioinformatics online.}",
+        "author": "P\u00e9rez-Silva, Jos\u00e9 G and Araujo-Voces, Miguel and Quesada, V\u00edctor",
+        "date": "2018-02",
+        "doi": "10.1093/bioinformatics/bty109",
+        "issn": "1367-4803",
+        "journal": "Bioinformatics",
+        "number": "13",
+        "pages": "2322-2324",
+        "title": "nVenn: generalized, quasi-proportional Venn and Euler diagrams}",
+        "type": "article",
+        "volume": "34",
+        "year": "2018"
+    },
+    "10.1145/2810012": {
+        "abstract": "This paper presents the first design principles that optimize the visualization of sets using linear diagrams. These principles are justified through empirical studies that evaluate the impact of graphical features on task performance. Linear diagrams represent sets using straight line segments, with line overlaps corresponding to set intersections. This study builds on recent empirical research, which establishes that linear diagrams can be superior to prominent set visualization techniques, namely Euler and Venn diagrams. We address the problem of how to best visualize overlapping sets using linear diagrams. To solve the problem, we investigate which graphical features of linear diagrams significantly impact user task performance. To this end, we conducted seven crowdsourced empirical studies involving a total of 1,760 participants. These studies allowed us to identify the following design principles, which significantly aid task performance: use a minimal number of line segments, use guidelines where overlaps start and end, and draw lines that are thin as opposed to thick bars. We also evaluated the following graphical properties that did not significantly impact task performance: color, orientation, and set order. The results are brought to life through a freely available software implementation that automatically draws linear diagrams with user-controlled graphical choices. An important consequence of our research is that users are now able to create effective visualizations of sets automatically, thus improving human--computer interaction.",
+        "address": "New York, NY, USA",
+        "articleno": "27",
+        "author": "Rodgers, Peter and Stapleton, Gem and Chapman, Peter",
+        "date": "2015-09",
+        "doi": "10.1145/2810012",
+        "issn": "1073-0516",
+        "journal": "ACM Trans. Comput.-Hum. Interact.",
+        "keywords": "Sets, linear diagrams, visualization",
+        "number": "6",
+        "numpages": "39",
+        "publisher": "Association for Computing Machinery",
+        "title": "Visualizing Sets with Linear Diagrams",
+        "type": "article",
+        "url": "https://doi.org/10.1145/2810012",
+        "volume": "22",
+        "year": "2015"
+    },
+    "10.1145/2968220.2968229": {
+        "abstract": "Node-link diagrams are widely used for visualizing relational data in a wide range of fields. However, in many situations it is useful to provide set membership information for elements in networks. We present BranchingSets, an interactive visualization technique that uses visual encodings similar to Kelp Diagrams in order to augment traditional node-link diagrams with information about the categories that both nodes and links belong to. BranchingSets introduces novel user-driven methods to procedurally navigate the graph topology and to interactively inspect complex, hierarchical data associated with individual nodes. Results indicate that users find the technique engaging and easy to use. This is further confirmed by a quantitative study that compares the effectiveness of the visual encodings used in BranchingSets to other techniques for displaying set membership within node-link diagrams, finding our technique more accurate and more efficient for facilitating interactive queries on networks containing nodes that belong to multiple sets.",
+        "address": "New York, NY, USA",
+        "author": "Paduano, Francesco and Etemadpour, Ronak and Forbes, Angus G.",
+        "booktitle": "Proceedings of the 9th International Symposium on Visual Information Communication and Interaction",
+        "date": "2016",
+        "doi": "10.1145/2968220.2968229",
+        "isbn": "9781450341493",
+        "location": "Dallas, TX, USA",
+        "numpages": "8",
+        "pages": "9--16",
+        "publisher": "Association for Computing Machinery",
+        "series": "VINCI '16",
+        "title": "BranchingSets: Interactively Visualizing Categories on Node-Link Diagrams",
+        "type": "inproceedings",
+        "url": "https://doi.org/10.1145/2968220.2968229",
+        "year": "2016"
+    },
+    "2019_infovis_upset": {
+        "author": "Kiran Gadhave and Hendrik Strobelt and Nils Gehlenborg and Alexander Lex",
+        "booktitle": "Proceedings of the IEEE Information Visualization Conference - Posters (InfoVis '19)",
+        "date": "2019",
+        "title": "UpSet 2: From Prototype to Tool ",
+        "type": "inproceedings",
+        "year": "2019"
+    },
+    "6634104": {
+        "abstract": "In many applications, data tables contain multi-valued attributes that often store the memberships of the table entities to multiple sets such as which languages a person masters, which skills an applicant documents, or which features a product comes with. With a growing number of entities, the resulting element-set membership matrix becomes very rich of information about how these sets overlap. Many analysis tasks targeted at set-typed data are concerned with these overlaps as salient features of such data. This paper presents Radial Sets, a novel visual technique to analyze set memberships for a large number of elements. Our technique uses frequency-based representations to enable quickly finding and analyzing different kinds of overlaps between the sets, and relating these overlaps to other attributes of the table entities. Furthermore, it enables various interactions to select elements of interest, find out if they are over-represented in specific sets or overlaps, and if they exhibit a different distribution for a specific attribute compared to the rest of the elements. These interactions allow formulating highly-expressive visual queries on the elements in terms of their set memberships and attribute values. As we demonstrate via two usage scenarios, Radial Sets enable revealing and analyzing a multitude of overlapping patterns between large sets, beyond the limits of state-of-the-art techniques.",
+        "author": "Alsallakh, Bilal and Aigner, Wolfgang and Miksch, Silvia and Hauser, Helwig",
+        "date": "2013-12",
+        "doi": "10.1109/TVCG.2013.184",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Histograms;Interactive systems;Scalability;Color imaging;Data visualization;Histograms;Interactive systems;Scalability;Color imaging;Data visualization;scalability;Multi-valued attributes;set-typed data;overlapping sets;visualization technique",
+        "number": "12",
+        "pages": "2496--2505",
+        "title": "Radial Sets: Interactive Visual Analysis of Large Overlapping Sets",
+        "type": "article",
+        "volume": "19",
+        "year": "2013"
+    },
+    "6876026": {
+        "abstract": "Visualizing sets to reveal relationships between constituent elements is a complex representational problem. Recent research presents several automated placement and grouping techniques to highlight connections between set elements. However, these techniques do not scale well for sets with cardinality greater than one hundred elements. We present OnSet, an interactive, scalable visualization technique for representing large-scale binary set data. The visualization technique defines a single, combined domain of elements for all sets, and models each set by the elements that it both contains and does not contain. OnSet employs direct manipulation interaction and visual highlighting to support easy identification of commonalities and differences as well as membership patterns across different sets of elements. We present case studies to illustrate how the technique can be successfully applied across different domains such as bio-chemical metabolomics and task and event scheduling.",
+        "author": "Sadana, Ramik and Major, Timothy and Dove, Alistair and Stasko, John",
+        "doi": "10.1109/TVCG.2014.2346249",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Data visualization;Large-scale systems;Complexity theory;Image color analysis;Nonhomogeneous media;Set visualization;information visualization;direct manipulation;Euler diagrams;interaction;logical operations",
+        "month": "Dec",
+        "number": "12",
+        "pages": "1993-2002",
+        "title": "OnSet: A Visualization Technique for Large-scale Binary Set Data",
+        "type": "article",
+        "volume": "20",
+        "year": "2014"
+    },
+    "7194854": {
+        "author": "Yal\u00e7in, M. Adil and Elmqvist, Niklas and Bederson, Benjamin B.",
+        "doi": "10.1109/TVCG.2015.2467051",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Aggregates;Motion pictures;Data visualization;Visualization;Scalability;Filtering;Chapters;Multi-valued attributes;sets;visualization;set visualization;data exploration;interaction;design;scalability;Multi-valued attributes;sets;visualization;set visualization;data exploration;interaction;design;scalability",
+        "number": "1",
+        "pages": "688-697",
+        "title": "AggreSet: Rich and Scalable Set Exploration using Visualizations of Element Aggregations",
+        "type": "article",
+        "volume": "22",
+        "year": "2016"
+    },
+    "7536208": {
+        "abstract": "When analyzing a large amount of data, analysts often define groups over data elements that share certain properties. Using these groups as the unit of analysis not only reduces the data volume, but also allows detecting various patterns in the data. This involves analyzing intersection relations between these groups, and how the element attributes vary between these intersections. This kind of set-based analysis has various applications in a variety of domains, due to the generic and powerful notion of sets. However, visualizing intersections relations is challenging because their number grows exponentially with the number of sets. We present a novel technique based on Treemaps to provide a comprehensive overview of non-empty intersections in a set system in a scalable way. It enables gaining insight about how elements are distributed across these intersections as well as performing fine-grained analysis to explore and compare their attributes both in overview and in detail. Interaction allows querying and filtering these elements based on their set memberships. We demonstrate how our technique supports various use cases in data exploration and analysis by providing insights into set-based data, beyond the limits of state-of-the-art techniques.",
+        "author": "Alsallakh, Bilal and Ren, Liu",
+        "date": "2017-01",
+        "doi": "10.1109/TVCG.2016.2598496",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Data visualization;Silicon;Visualization;Bars;Layout;Scalability;Data analysis;Set visualization;treemaps;interaction;scalability",
+        "number": "1",
+        "pages": "361--370",
+        "title": "PowerSet: A Comprehensive Visualization of Set Intersections",
+        "type": "article",
+        "volume": "23",
+        "year": "2017"
+    },
+    "8031575": {
+        "abstract": "Many researchers have been studied visualization techniques to represent relationships between sets. However, most recent studies focused on the scalability of visualizing set relations, rather than on set-typed data itself. Although solving such problems is important, understanding the structural context of the entire data is also essential for analyzing data. We propose NetSet, which combines two techniques to resolve the limitations in representing set relationships. First, we construct a network to provide a structural overview of the set system. Then, we place a matrix layout to visualize intersections among sets. Finally, by combining these two techniques, NetSet enables them to complement each other. The combination gives analysts both the overview and specific views of the data. Furthermore, NetSet provides both flexible exploration of a set system and quantitative analysis of set intersections. We conducted a case study to demonstrate how the combination can be successfully applied to real data, namely topic-talks data from the TED organization.",
+        "author": "Heungseok Park and Hongjun Lim and Wonjae Lee and Kyungwon Lee",
+        "booktitle": "2017 IEEE Pacific Visualization Symposium (PacificVis)",
+        "doi": "10.1109/PACIFICVIS.2017.8031575",
+        "issn": "2165-8773",
+        "keywords": "Data visualization;Scalability;Visualization;Motion pictures;Layout;Switches;Space exploration;Set;set visualization;multi-view visualization",
+        "pages": "26-30",
+        "title": "NetSet: A systematic integration of visualization for analyzing set intersections with network",
+        "type": "inproceedings",
+        "year": "2017-04"
+    },
+    "8733024": {
+        "abstract": "Set visualization is a well-known task in information visualization. In biology, it is used for comparing visually sets of genes or proteins, typically using Venn diagrams. However, limitations of the Venn diagram are well-known: they are limited to 6 sets and difficult to read above 4. Many other set visualization techniques have been proposed, but they have never been widely used in biology. In this paper, we introduce RainBio, a technique for visualizing sets in biology and aimed at providing a global overview showing the size of the main intersections, in a proportional way, and the similarities between sets. We adapt rainbow boxes, a technique for visualizing small datasets, to the visualization of larger sets, using element aggregation and intersection clustering. We present the application of RainBio to three datasets, with 5, 6 and 12 sets. We also describe a small user study comparing RainBio with Venn diagrams, involving 30 students in biology. Results showed that RainBio led to significantly fewer errors on 6-set dataset, and that the majority of students preferred RainBio. RainBio is proposed as a web-based tool for up to 15 sets.",
+        "author": "Lamy, Jean-Baptiste and Tsopra, Rosy",
+        "date": "2020-11",
+        "doi": "10.1109/TVCG.2019.2921544",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Visualization;Biology;Task analysis;Tools;Data visualization;Image color analysis;Bars;Gene set comparison;set visualization;venn diagram;bioinformatics",
+        "number": "11",
+        "pages": "3285--3298",
+        "title": "RainBio: Proportional Visualization of Large Sets in Biology",
+        "type": "article",
+        "volume": "26",
+        "year": "2020"
+    },
+    "9224192": {
+        "abstract": "We propose MetroSets, a new, flexible online tool for visualizing set systems using the metro map metaphor. We model a given set system as a hypergraph $\\mathcal{H",
+        "author": "Jacobsen, Ben and Wallinger, Markus and Kobourov, Stephen and N\u00f6llenburg, Martin",
+        "date": "2021-02",
+        "doi": "10.1109/TVCG.2020.3030475",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Data visualization;Layout;Pipelines;Fats;Task analysis;Visual analytics;Set visualization;metro map metaphor;hypergraphs",
+        "number": "2",
+        "pages": "1257-1267",
+        "title": "MetroSets: Visualizing Sets as Metro Maps",
+        "type": "ARTICLE",
+        "volume": "27",
+        "year": "2021"
+    },
+    "9307276": {
+        "abstract": "We present GridSet, a novel set visualization for exploring elements, their attributes, intersections, as well as entire sets. In this set visualization, each set representation is composed of glyphs, which represent individual elements and their attributes utilizing different visual encodings. In each set, elements are organized within a grid treemap layout that can provide space-efficient overviews of the elements structured by set intersections across multiple sets. These intersecting elements can be connected among sets through visual links. These visual representations for the individual set, elements, and intersection in GridSet facilitate novel interaction approaches for undertaking analysis tasks by utilizing both macroscopic views of sets, as well as microscopic views of elements and attribute details. In order to perform multiple set operations, GridSet supports a simple and straightforward process for set operations through dragging and dropping set objects. Our use cases involving two large set-typed datasets demonstrate that GridSet facilitates the exploration and identification of meaningful patterns and distributions of elements with respect to attributes and set intersections for solving complex analysis problems in set-typed data.",
+        "author": "Chung, Haeyong and Nandhakumar, Santhosh and Yang, Seungwon",
+        "doi": "10.1109/TVCG.2020.3047111",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Data visualization;Visualization;Layout;Motion pictures;Image color analysis;Complexity theory;Aggregates;Set visualization;sets;intersections;elements;attributes;glyphs;visual links;treemap;set-typed data",
+        "month": "Aug",
+        "number": "8",
+        "pages": "2983-2998",
+        "title": "GridSet: Visualizing Individual Elements and Attributes for Analysis of Set-Typed Data",
+        "type": "article",
+        "volume": "28",
+        "year": "2022"
+    },
+    "9552179": {
+        "abstract": "In this paper, we propose F2-Bubbles, a set overlay visualization technique that addresses overlapping artifacts and supports interactive editing with intelligent suggestions. The core of our method is a new, efficient set overlay construction algorithm that approximates the optimal set overlay by considering set elements and their non-set neighbors. Thanks to the efficiency of the algorithm, interactive editing is achieved, and with intelligent suggestions, users can easily and flexibly edit visualizations through direct manipulations with local adaptations. A quantitative comparison with state-of-the-art set visualization techniques and case studies demonstrate the effectiveness of our method and suggests that F2-Bubbles is a helpful technique for set visualization.",
+        "author": "Wang, Yunhai and Cheng, Da and Wang, Zhirui and Zhang, Jian and Zhou, Liang and He, Gaoqi and Deussen, Oliver",
+        "date": "2022-01",
+        "doi": "10.1109/TVCG.2021.3114761",
+        "issn": "1941-0506",
+        "journal": "IEEE Transactions on Visualization and Computer Graphics",
+        "keywords": "Visualization;Data visualization;Task analysis;Clutter;Approximation algorithms;Tuning;Micromechanical devices;Set visualization;Edge Crossing;Minimal Spanning Tree",
+        "number": "1",
+        "pages": "422-432",
+        "title": "F2-Bubbles: Faithful Bubble Set Construction and Flexible Editing",
+        "type": "article",
+        "volume": "28",
+        "year": "2022"
+    },
     "AfricaMap": {
         "author": "Wikimedia Commons}",
         "date": "2010",
@@ -8,6 +209,13 @@
         "type": "misc",
         "url": "http://en.wikipedia.org/wiki/File:Official_languages_in_Africa.svg",
         "year": "2010"
+    },
+    "Agarwal2020": {
+        "author": "Agarwal, Shivam and Tkachev, Gleb and Wermelinger, Michel and Beck, Fabian",
+        "doi": "10.2312/vmv.20201189",
+        "title": "Visualizing Sets and Changes in Membership Using Layered Set Intersection Graphs",
+        "type": "inproceedings",
+        "year": "2020-09"
     },
     "AlqadahEtAl2014": {
         "abstract": "Euler diagrams, used to visualize data and as a basis for visual languages, are an effective representation of information, but they can become cluttered. Previous research established a measure of Euler diagram clutter, empirically shown to correspond with how people perceive clutter. However, the impact of clutter on user understanding is unknown. An empirical study was executed with three levels of diagram clutter. We found a significant effect: increased diagram clutter leads to significantly worse performance, measured by time and error rates. In addition, we found a significant effect of zone (a region in the diagram) clutter on time and error rates. Surprisingly, the zones with a middle level of clutter had the highest error rate compared to the zones with lowest and the highest clutter. Also, the questions whose answers were placed in zones with medium clutter had the highest mean time taken to answer questions. In conclusion, both diagram clutter and zone clutter impact the interpretation of Euler diagrams. Consequently, future work will establish whether a single, but cluttered, Euler diagram is a more effective representation of information than multiple, but less cluttered, Euler diagrams.",
@@ -291,6 +499,22 @@
         "type": "misc",
         "year": "2008"
     },
+    "HURTADO2018262": {
+        "abstract": "We study an algorithmic problem that is motivated by ink minimization for sparse set visualizations. Our input is a set of points in the plane which are either blue, red, or purple. Blue points belong exclusively to the blue set, red points belong exclusively to the red set, and purple points belong to both sets. A red-blue-purple spanning graph (RBP spanning graph) is a set of edges connecting the points such that the subgraph induced by the red and purple points is connected, and the subgraph induced by the blue and purple points is connected. We study the geometric properties of minimum RBP spanning graphs and the algorithmic problems associated with computing them. Specifically, we show that the general problem can be solved in polynomial time using matroid techniques. In addition, we discuss more efficient algorithms for the case in which points are located on a line or a circle, and also describe a fast (12\u03c1+1)-approximation algorithm, where \u03c1 is the Steiner ratio.",
+        "author": "Ferran Hurtado and Matias Korman and Marc {van Kreveld} and Maarten L\u00f6ffler and Vera Sacrist\u00e1n and Akiyoshi Shioura and Rodrigo I. Silveira and Bettina Speckmann and Takeshi Tokuyama",
+        "date": "2018",
+        "doi": "https://doi.org/10.1016/j.comgeo.2017.06.006",
+        "issn": "0925-7721",
+        "journal": "Computational Geometry",
+        "keywords": "Minimum spanning tree, Colored point set, Set visualization, Approximation, Matroid intersection",
+        "note": "Special Issue in Memory of Ferran Hurtado",
+        "pages": "262-276",
+        "title": "Colored spanning graphs for set visualization",
+        "type": "article",
+        "url": "https://www.sciencedirect.com/science/article/pii/S0925772117300585",
+        "volume": "68",
+        "year": "2018"
+    },
     "Heil2004": {
         "author": "Jeremy Heil",
         "date": "2004",
@@ -311,6 +535,15 @@
         "type": "article",
         "volume": "9",
         "year": "2008"
+    },
+    "InteractiVenn2015": {
+        "author": "Heberle H, Meirelles GV, da Silva FR, Telles GP, Minghim R.",
+        "date": "2015-05-22",
+        "doi": "10.1186/s12859-015-0611-3",
+        "journal": "BMC Bioinformatics.",
+        "title": "InteractiVenn: a web-based tool for the analysis of sets through Venn diagrams.",
+        "type": "article",
+        "year": "2015"
     },
     "Itoh2009": {
         "author": "Takayuki Itoh and Chris Muelder and Kwan-Liu Ma and Jun Sese",
@@ -346,6 +579,21 @@
         "type": "article",
         "volume": "9",
         "year": "2008"
+    },
+    "LAMY201771": {
+        "abstract": "Overlapping set visualization is a well-known problem in information visualization. This problem considers elements and sets containing all or part of the elements, a given element possibly belonging to more than one set. A typical example is the properties of the 20 amino-acids. A more complex application is the visual comparison of the contraindications or the adverse effects of several similar drugs. The knowledge involved is voluminous, each drug has many contraindications and adverse effects, some of them are shared with other drugs. Another real-life application is the visualization of gene annotation, each gene product being annotated with several annotation terms indicating the associated biological processes, molecular functions and cellular components. In this paper, we present rainbow boxes, a novel technique for visualizing overlapping sets, and its application to the presentation of the properties of amino-acids, the comparison of drug properties, and the visualization of gene annotation. This technique requires solving a combinatorial optimization problem; we propose a specific heuristic and we evaluate and compare it to general optimization algorithms. We also describe a user study comparing rainbow boxes to tables and showing that the former allowed physicians to find information significantly faster. Finally, we discuss the limits and the perspectives of rainbow boxes.",
+        "author": "Jean-Baptiste Lamy and H\u00e9l\u00e8ne Berthelot and Coralie Capron and Madeleine Favre",
+        "date": "2017",
+        "doi": "https://doi.org/10.1016/j.jvlc.2017.09.003",
+        "issn": "1045-926X",
+        "journal": "Journal of Visual Languages & Computing",
+        "keywords": "Overlapping set visualization, Information visualization, Knowledge visualization, User study, Drug properties, Gene annotation",
+        "pages": "71--82",
+        "title": "Rainbow boxes: A new technique for overlapping set visualization and two applications in the biomedical domain",
+        "type": "article",
+        "url": "https://www.sciencedirect.com/science/article/pii/S1045926X17301660",
+        "volume": "43",
+        "year": "2017"
     },
     "Lauritsen2009": {
         "author": "Jens M Lauritsen",
@@ -457,6 +705,21 @@
         "type": "article",
         "volume": "25",
         "year": "2014"
+    },
+    "PARK201664": {
+        "abstract": "In an era where data on social, economic, and physical networks are proliferating at a rapid pace, the ability to understand the underlying complex structural connections, discover prominent entities, and identify clusters is becoming increasingly important. It is also well-established that interactive visualizations can amplify human cognition and augment decision making. Motivated by a practical need articulated by corporate decision makers and limitations of existing visual representations, this research presents our journey in designing and implementing bicentric diagrams, a novel graph-based set visualization technique. A bicentric diagram enables simultaneous identification of sets, set relationships, and set member reach in integrated egonetworks of two focal entities. Our technique builds on the well-established sociological theory of tie strength to visually group and position nodes. We illustrate the broad applicability of bicentric diagrams with examples from four diverse sample domains: university collaboration, technology co-occurrence, health app purchases, and interfirm alliance networks. We assess the value of our technique using an expert-based evaluation approach. The paper concludes with implications and a discussion of opportunities for implementation in real-world decision support settings.",
+        "author": "Hyunwoo Park and Rahul C. Basole",
+        "date": "2016",
+        "doi": "https://doi.org/10.1016/j.dss.2016.02.001",
+        "issn": "0167-9236",
+        "journal": "Decision Support Systems",
+        "keywords": "Bicentric diagram, Set visualization, Network visualization, Strength of ties",
+        "pages": "64-77",
+        "title": "Bicentric diagrams: Design and applications of a graph-based relational set visualization technique",
+        "type": "article",
+        "url": "https://www.sciencedirect.com/science/article/pii/S016792361630001X",
+        "volume": "84",
+        "year": "2016"
     },
     "PiroozniaEtAl2007": {
         "author": "Mehdi Pirooznia and Vijayaraj Nagarajan and Youping Deng",
@@ -829,6 +1092,16 @@
         "type": "misc",
         "year": "2010"
     },
+    "Wybrow2021": {
+        "abstract": "Area-proportional Euler diagrams are frequently used to visualize data from Microarray experiments, but are also applied to a wide variety of other data from biosciences, social networks and other domains.",
+        "author": "Wybrow, Michael and Rodgers, Peter and Dib, Fadi K.",
+        "date": "2021-04-26",
+        "doi": "10.1186/s12859-021-04121-82",
+        "journal": "BMC Bioinformatics",
+        "title": "Euler diagrams drawn with ellipses area-proportionally (Edeap)",
+        "type": "article",
+        "year": "2021"
+    },
     "alsallakh2013radial": {
         "author": "Bilal Alsallakh and Wolfgang Aigner and Silvia Miksch and Helwig Hauser",
         "date": "2013-10",
@@ -911,6 +1184,19 @@
         "type": "inproceedings",
         "year": "2009"
     },
+    "doi:10.1177/1473871615605347": {
+        "abstract": " In this article, we introduce a novel timeline visualization technique, TimeSets, that helps make sense of complex temporal datasets by showing the set relationships among individual events. TimeSets visually groups events that share a topic, such as a place or a person, while preserving their temporal order. It dynamically adjusts the level of detail for each event to suit the amount of information and display estate. Various design options were explored to address issues such as one event belonging to multiple topics. A controlled experiment was conducted to evaluate its effectiveness by comparing it to the KelpFusion method. The results showed significant advantage in accuracy and user preference.",
+        "author": "Phong H Nguyen and Kai Xu and Rick Walker and BL William Wong",
+        "date": "2016",
+        "doi": "10.1177/1473871615605347",
+        "journal": "Information Visualization",
+        "number": "3",
+        "pages": "253-269",
+        "title": "TimeSets: Timeline visualization with set relations",
+        "type": "article",
+        "volume": "15",
+        "year": "2016"
+    },
     "dork2012pivotpaths": {
         "author": "Marian D\u00f6rk and Riche Henry and Nathalie and Gonzalo Ramos and Susan Dumais",
         "date": "2012",
@@ -970,6 +1256,36 @@
         "venue": "Boston, Massachusetts, USA",
         "year": "2000"
     },
+    "https://doi.org/10.1111/cgf.13988": {
+        "abstract": "Abstract In many applications, membership of set elements changes over time. Since each element can be present in multiple sets, the sets also overlap. As a result, it becomes challenging to visualize the temporal change in set membership of elements across several timesteps while showing individual set intersections. We propose Set Streams, a visualization technique that represents changing set structures on a timeline as branching and merging streams. The streams encode the changing membership of elements with set intersections. A query-based selection mechanism supports a flexible comparison of selected groups of elements across the temporal evolution. The main timeline view is complemented with additional panels to provide details about the elements. While the proposed visualization is an application-independent visualization technique for dynamic sets, we demonstrate its effectiveness and applicability through three diverse application examples and expert feedback.",
+        "author": "Agarwal, Shivam and Beck, Fabian",
+        "doi": "https://doi.org/10.1111/cgf.13988",
+        "eprint": "https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.13988",
+        "journal": "Computer Graphics Forum",
+        "number": "3",
+        "pages": "383-391",
+        "title": "Set Streams: Visual Exploration of Dynamic Overlapping Sets",
+        "type": "article",
+        "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.13988",
+        "volume": "39",
+        "year": "2020"
+    },
+    "https://doi.org/10.1111/cgf.14814": {
+        "abstract": "Abstract Euler diagrams are a popular technique to visualize set-typed data. However, creating diagrams using simple shapes remains a challenging problem for many complex, real-life datasets. To solve this, we propose RectEuler: a flexible, fully-automatic method using rectangles to create Euler-like diagrams. We use an efficient mixed-integer optimization scheme to place set labels and element representatives (e.g., text or images) in conjunction with rectangles describing the sets. By defining appropriate constraints, we adhere to well-formedness properties and aesthetic considerations. If a dataset cannot be created within a reasonable time or at all, we iteratively split the diagram into multiple components until a drawable solution is found. Redundant encoding of the set membership using dots and set lines improves the readability of the diagram. Our web tool lets users see how the layout changes throughout the optimization process and provides interactive explanations. For evaluation, we perform quantitative and qualitative analysis across different datasets and compare our method to state-of-the-art Euler diagram generation methods.",
+        "author": "Paetzold, Patrick and Kehlbeck, Rebecca and Strobelt, Hendrik and Xue, Yumeng and Storandt, Sabine and Deussen, Oliver",
+        "date": "2023",
+        "doi": "https://doi.org/10.1111/cgf.14814",
+        "eprint": "https://onlinelibrary.wiley.com/doi/pdf/10.1111/cgf.14814",
+        "journal": "Computer Graphics Forum",
+        "keywords": "CCS Concepts, \u2022 Human-centered computing \u2192 Visualization, Visualization techniques",
+        "number": "3",
+        "pages": "87-98",
+        "title": "RectEuler: Visualizing Intersecting Sets using Rectangles",
+        "type": "article",
+        "url": "https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.14814",
+        "volume": "42",
+        "year": "2023"
+    },
     "huo2003kmvql": {
         "address": "Los Alamitos, CA, USA",
         "author": "Jiwen Huo and William B. Cowan",
@@ -998,6 +1314,16 @@
         "title": "Colored Spanning Graphs for Set Visualization",
         "type": "inproceedings",
         "year": "2013"
+    },
+    "inbook": {
+        "author": "Sathiyanarayanan, Mithileysh and Alsaffar, Mohammad",
+        "doi": "10.1007/978-981-10-3376-6_37",
+        "isbn": "978-981-10-3375-9",
+        "month": "01",
+        "pages": "339-344",
+        "title": "Euler-Time Diagrams: A Set Visualisation Technique Analysed Over Time",
+        "type": "inbook",
+        "year": "2018"
     },
     "kelp2012": {
         "author": "Kasper Dinkla and Marc J. van Kreveld and Betinna Speckmann and Michel A. Westenberg",
@@ -1196,6 +1522,16 @@
         "volume": "16",
         "year": "2010"
     },
+    "rottmann2022mosaicsets": {
+        "archiveprefix": "arXiv",
+        "author": "Peter Rottmann and Markus Wallinger and Annika Bonerath and Sven Gedicke and Martin N\u00f6llenburg and Jan-Henrik Haunert",
+        "doi": "10.48550/arXiv.2208.07982",
+        "eprint": "2208.07982",
+        "primaryclass": "cs.GR",
+        "title": "MosaicSets: Embedding Set Systems into Grid Graphs",
+        "type": "misc",
+        "year": "2022"
+    },
     "schulz2008visual": {
         "author": "Hans-J\u00f6rg Schulz and Mathias John and Andrea Unger and H. Schumann",
         "booktitle": "Eurographics Workshop on Visual Computing for Biomedicine",
@@ -1344,6 +1680,16 @@
         "type": "article",
         "volume": "32",
         "year": "2013"
+    },
+    "yan2023eulermerge": {
+        "archiveprefix": "arXiv",
+        "author": "Xinyuan Yan and Peter Rodgers and Peter Rottmann and Daniel Archambault and Jan-Henrik Haunert and Bei Wang",
+        "doi": "10.48550/arXiv.2311.15396",
+        "eprint": "2311.15396",
+        "primaryclass": "cs.CG",
+        "title": "EulerMerge: Simplifying Euler Diagrams Through Set Merges",
+        "type": "misc",
+        "year": "2023"
     },
     "ziegler2002visualizing": {
         "author": "E. Ziegler and Christoph Kunz and Veit Botsch and Josef Schneeberger",
