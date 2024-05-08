@@ -58,7 +58,7 @@ var editable = true;
  * @type {{html: string, id: string}}
  */
 var paper = {
-  html: 'An extension of Bilal et al. (2014). Visualizing sets and set-typed data: State-of-the-art and future challenges.',
+  html: 'An extension of Alsallakh et al. [2014]. Visualizing sets and set-typed data: State-of-the-art and future challenges.',
   //   id: 'Beck2016Visual',
 };
 
